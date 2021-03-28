@@ -17,6 +17,7 @@
     "gulp": "^4.0.2"
   },
   "scripts": {
+    "start": "cd app && npm start",
     "prebuild": "npm i",
     "build": "gulp build",
     "tests": "gulp tests"
