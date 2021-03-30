@@ -2,13 +2,15 @@
     <v-app v-if="isDrizzleInitialized">
         <v-app-bar app color="primary" dark> </v-app-bar>
 
+        <v-navigation-drawer app></v-navigation-drawer>
+
         <v-main>
             <v-container>
                 <drizzle-account units="Ether" :precision="2" />
 
                 <drizzle-contract
                     contractName="IdentityContract"
-                    method="marketAuthority"
+                    method="owner"
                     label="Market Authority"
                 />
             </v-container>
