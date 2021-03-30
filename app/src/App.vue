@@ -5,27 +5,16 @@
         <v-navigation-drawer app></v-navigation-drawer>
 
         <v-main>
-            <v-container>
-                <drizzle-account units="Ether" :precision="2" />
-
-                <drizzle-contract
-                    contractName="IdentityContract"
-                    method="owner"
-                    label="Market Authority"
-                />
-            </v-container>
+            <router-view />
         </v-main>
     </v-app>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+
 export default {
     name: 'App',
-
-    data: () => ({
-        //
-    }),
 
     computed: {
         ...mapGetters('drizzle', ['isDrizzleInitialized']),

@@ -1,5 +1,6 @@
-import IdentityContractFactory from './contracts/IdentityContractFactory.json'
-import IdentityContract from './contracts/IdentityContract.json'
+import IdentityContractFactory from '@/contracts/IdentityContractFactory.json'
+import IdentityContract from '@/contracts/IdentityContract.json'
+import ClaimVerifier from '../contracts/ClaimVerifier.json'
 
 const options = {
     web3: {
@@ -9,7 +10,7 @@ const options = {
             url: 'ws://127.0.0.1:8545',
         },
     },
-    contracts: [IdentityContract, IdentityContractFactory],
+    contracts: [IdentityContract, IdentityContractFactory, ClaimVerifier],
     events: {
         SimpleStorage: ['StorageSet'],
         IdentityContractFactory: ['IdentityContractCreation'],
