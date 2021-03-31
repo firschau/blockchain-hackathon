@@ -23,15 +23,8 @@ export const addClaim = (address, topic, data) => {
             console.log(data)
             console.log('example.com')
             authority.methods
-                .addClaim(
-                    topic,
-                    1,
-                    activeAccount,
-                    signature,
-                    data,
-                    'example.com'
-                )
-                .call()
+                .addClaim(topic, 1, activeAccount, signature, data, '')
+                .send({ from: activeAccount, gas: 7000000 })
                 .then((response) => console.log(response))
         })
 }

@@ -48,7 +48,13 @@ export default {
                 .then((response) => console.log(response))
         },
         addContract() {
-            addClaim('0x6ea820f77c30c9e9fa602841fba4923b18ff22f8', 10030, 0)
+            addClaim(
+                '0x6ea820f77c30c9e9fa602841fba4923b18ff22f8',
+                10030,
+                this.drizzleInstance.web3.utils.toHex(
+                    '{ "q": "ab", "expiryDate": "1895220001", "startDate": "1" }'
+                )
+            )
             console.log(drizzle.contracts)
             /**
             call(
