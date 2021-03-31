@@ -2,6 +2,8 @@ import IdentityContractFactory from '@/contracts/IdentityContractFactory.json'
 import IdentityContract from '@/contracts/IdentityContract.json'
 import ClaimVerifier from '../contracts/ClaimVerifier.json'
 
+import { Drizzle } from '@drizzle/store'
+
 const options = {
     web3: {
         block: false,
@@ -21,3 +23,5 @@ const options = {
 }
 
 export default options
+
+export const drizzle = new Drizzle(options)

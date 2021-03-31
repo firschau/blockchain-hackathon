@@ -13,9 +13,7 @@
             method="createIdentityContract"
         />
 
-        <v-btn @click="isRegisteredIdentityContract"
-            >isRegisteredIdentityContract</v-btn
-        >
+        <v-btn @click="addContract"> addContract </v-btn>
 
         <drizzle-contract-form
             contractName="IdentityContractFactory"
@@ -26,8 +24,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getNewContract, call } from '../utils/drizzle'
+import { getNewContract } from '../utils/drizzle'
+import { addClaim } from '../utils/marketAuthority'
 import IdentityContract from '../contracts/IdentityContract.json'
+
+import { drizzle } from '../plugins/drizzleOptions'
 
 export default {
     name: 'Home',
@@ -46,12 +47,17 @@ export default {
                 .call()
                 .then((response) => console.log(response))
         },
-        isRegisteredIdentityContract() {
+        addContract() {
+            addClaim('0x6ea820f77c30c9e9fa602841fba4923b18ff22f8', 10030, 0)
+            console.log(drizzle.contracts)
+            /**
             call(
                 'IdentityContractFactory',
                 'isRegisteredIdentityContract',
-                '0x165c206A24486C1829D41d0a30d3b5a19F7d0DBD'
+                '0x6ea820f77c30c9e9fa602841fba4923b18ff22f8'
             ).then((response) => console.log(response))
+             * 
+             */
         },
     },
 
