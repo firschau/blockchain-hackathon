@@ -1,28 +1,64 @@
 {
-  "name": "b2e2_contracts",
-  "version": "1.0.0",
-  "description": "",
-  "main": "truffle-config.js",
-  "dependencies": {
-    "@openzeppelin/contracts": "^3.4.0",
-    "ethereumjs-util": "^6.2.0",
-    "remixd": "^0.2.0-alpha.5",
-    "solc": "^0.7.6",
-    "truffle": "^5.1.52",
-    "truffle-assertions": "^0.9.2",
-    "truffle-contract-size": "^2.0.1",
-    "truffle-hdwallet-provider": "^1.0.17"
-  },
-  "devDependencies": {
-    "child_process": "^1.0.2",
-    "gulp": "^4.0.2"
-  },
-  "scripts": {
-    "start": "cd app && npm start",
-    "prebuild": "npm i",
-    "build": "gulp build",
-    "tests": "gulp tests"
-  },
-  "author": "B2E2 Community <b2e2@enbw.com>",
-  "license": "MIT"
+    "name": "b2e2_contracts",
+    "version": "1.0.0",
+    "description": "",
+    "main": "truffle-config.js",
+    "dependencies": {
+        "@openzeppelin/contracts": "^3.4.0",
+        "ethereumjs-util": "^6.2.0",
+        "remixd": "^0.2.0-alpha.5",
+        "solc": "^0.7.6",
+        "truffle": "^5.1.52",
+        "truffle-assertions": "^0.9.2",
+        "truffle-contract-size": "^2.0.1",
+        "truffle-hdwallet-provider": "^1.0.17",
+        "@drizzle/store": "^1.5.0",
+        "@drizzle/vue-plugin": "^0.1.0",
+        "core-js": "^3.6.5",
+        "prettier": "^2.2.1",
+        "vue": "^2.6.10",
+        "vue-router": "^3.2.0",
+        "vuetify": "^2.4.0",
+        "vuex": "^3.1.1"
+    },
+    "devDependencies": {
+        "child_process": "^1.0.2",
+        "gulp": "^4.0.2",
+        "@vue/cli-plugin-babel": "~4.5.12",
+        "@vue/cli-plugin-eslint": "~4.5.12",
+        "@vue/cli-plugin-router": "~4.5.0",
+        "@vue/cli-service": "~4.5.12",
+        "@vue/eslint-config-prettier": "^6.0.0",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^6.7.2",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-vue": "^6.2.2",
+        "lint-staged": "^10.5.4",
+        "prettier": "^2.2.1",
+        "sass": "^1.32.0",
+        "sass-loader": "^10.0.0",
+        "vue-cli-plugin-vuetify": "~2.3.1",
+        "vue-template-compiler": "^2.6.10",
+        "vuetify-loader": "^1.7.0"
+    },
+    "scripts": {
+        "start": "cd app && npm start",
+        "prebuild": "npm i",
+        "build": "gulp build",
+        "tests": "gulp tests",
+        "serve": "vue-cli-service serve",
+        "build-frontend": "vue-cli-service build",
+        "lint": "vue-cli-service lint"
+    },
+        "gitHooks": {
+        "pre-commit": "lint-staged"
+    },
+    "lint-staged": {
+        "*.{js,jsx,vue}": [
+            "vue-cli-service lint",
+            "git add"
+        ]
+    },
+    "author": "B2E2 Community <b2e2@enbw.com>",
+    "license": "MIT"
 }

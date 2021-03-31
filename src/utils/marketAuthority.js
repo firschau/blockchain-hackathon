@@ -11,22 +11,27 @@ export const addClaim = (address, topic, data) => {
     const web3 = store.getters['drizzle/drizzleInstance'].web3
     console.log(store.getters['drizzle/drizzleInstance'].web3.eth)
 
+    console.log(address + topic + data)
+
     store.getters['drizzle/drizzleInstance'].web3.eth.personal
-        .sign(
-            web3.utils.utf8ToHex([address, topic, data].toString()),
-            activeAccount
-        )
+        .sign(web3.utils.soliditySha3(address, topic, data), activeAccount)
         .then((signature) => {
+            console.log(topic)
+            console.log(1)
+            console.log(activeAccount)
             console.log(signature)
+            console.log(data)
+            console.log('example.com')
             authority.methods
-                .addClaim(topic, 1, activeAccount, signature, data, address)
+                .addClaim(
+                    topic,
+                    1,
+                    activeAccount,
+                    signature,
+                    data,
+                    'example.com'
+                )
                 .call()
                 .then((response) => console.log(response))
         })
-
-    /**
- 
-
- console.log(authority)
- */
 }
