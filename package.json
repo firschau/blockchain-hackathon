@@ -4,35 +4,36 @@
     "description": "",
     "main": "truffle-config.js",
     "dependencies": {
+        "@drizzle/store": "^1.5.0",
+        "@drizzle/vue-plugin": "^0.1.0",
         "@openzeppelin/contracts": "^3.4.0",
-        "ethereumjs-util": "^6.2.0",
+        "core-js": "^3.6.5",
+        "ethereumjs-util": "^7.0.9",
+        "prettier": "^2.2.1",
         "remixd": "^0.2.0-alpha.5",
         "solc": "^0.7.6",
         "truffle": "^5.1.52",
         "truffle-assertions": "^0.9.2",
         "truffle-contract-size": "^2.0.1",
         "truffle-hdwallet-provider": "^1.0.17",
-        "@drizzle/store": "^1.5.0",
-        "@drizzle/vue-plugin": "^0.1.0",
-        "core-js": "^3.6.5",
-        "prettier": "^2.2.1",
         "vue": "^2.6.10",
         "vue-router": "^3.2.0",
         "vuetify": "^2.4.0",
-        "vuex": "^3.1.1"
+        "vuex": "^3.1.1",
+        "web3": "^1.3.4"
     },
     "devDependencies": {
-        "child_process": "^1.0.2",
-        "gulp": "^4.0.2",
         "@vue/cli-plugin-babel": "~4.5.12",
         "@vue/cli-plugin-eslint": "~4.5.12",
         "@vue/cli-plugin-router": "~4.5.0",
         "@vue/cli-service": "~4.5.12",
         "@vue/eslint-config-prettier": "^6.0.0",
         "babel-eslint": "^10.1.0",
+        "child_process": "^1.0.2",
         "eslint": "^6.7.2",
         "eslint-plugin-prettier": "^3.3.1",
         "eslint-plugin-vue": "^6.2.2",
+        "gulp": "^4.0.2",
         "lint-staged": "^10.5.4",
         "prettier": "^2.2.1",
         "sass": "^1.32.0",
@@ -50,7 +51,7 @@
         "build-frontend": "vue-cli-service build",
         "lint": "vue-cli-service lint"
     },
-        "gitHooks": {
+    "gitHooks": {
         "pre-commit": "lint-staged"
     },
     "lint-staged": {

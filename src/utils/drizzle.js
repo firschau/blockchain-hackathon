@@ -7,7 +7,6 @@ export const cacheCall = (contract, method, ...args) => {
 }
 
 export const call = (contract, method, ...args) => {
-    console.log(store.getters['drizzle/drizzleInstance'].contracts)
     return store.getters['drizzle/drizzleInstance'].contracts[contract].methods[
         method
     ](...args).call()

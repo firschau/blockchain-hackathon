@@ -1,24 +1,6 @@
 <template>
     <v-container>
-        <drizzle-account units="Ether" :precision="2" />
-
-        <drizzle-contract
-            contractName="IdentityContract"
-            method="marketAuthority"
-            label="Market Authority"
-        />
-
-        <drizzle-contract-form
-            contractName="IdentityContractFactory"
-            method="createIdentityContract"
-        />
-
-        <v-btn @click="addContract"> addContract </v-btn>
-
-        <drizzle-contract-form
-            contractName="IdentityContractFactory"
-            method="isRegisteredIdentityContract"
-        />
+        <VBtn @click="addClaim"> addClaim </VBtn>
     </v-container>
 </template>
 
@@ -40,30 +22,31 @@ export default {
                 '0xd41001d59F8285a8DD630F069b37a991946D990B'
             )
 
-            console.log(identityContract)
-
             identityContract.methods
                 .marketAuthority()
                 .call()
                 .then((response) => console.log(response))
         },
-        addContract() {
-            addClaim(
-                '0x6ea820f77c30c9e9fa602841fba4923b18ff22f8',
-                10030,
-                this.drizzleInstance.web3.utils.toHex(
-                    '{ "q": "ab", "expiryDate": "1895220001", "startDate": "1" }'
-                )
-            )
+        addClaim() {
+            addClaim('0x6ea820f77c30c9e9fa602841fba4923b18ff22f8', 10030, {
+                q: 'ab',
+                expiryDate: 7721975,
+                startDate: 67219751,
+            })
             console.log(drizzle.contracts)
-            /**
-            call(
-                'IdentityContractFactory',
-                'isRegisteredIdentityContract',
+        },
+        isRegisteredIdentityContract() {
+            const physicalAssetAuthorityIdentityContract = getNewContract(
+                IdentityContract,
                 '0x6ea820f77c30c9e9fa602841fba4923b18ff22f8'
-            ).then((response) => console.log(response))
-             * 
-             */
+            )
+
+            physicalAssetAuthorityIdentityContract.methods
+                .getClaim(
+                    '40663254270200377111277385912022913925533123874160792033802638483746649929577'
+                )
+                .call()
+                .then((response) => console.log(response))
         },
     },
 
