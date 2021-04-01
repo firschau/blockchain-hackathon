@@ -21,7 +21,7 @@ export const cacheSend = (contract, method, value, ...args) => {
 export const send = (contract, method, value, ...args) => {
     return store.getters['drizzle/drizzleInstance'].contracts[contract].methods[
         method
-    ](value).call(...args)
+    ](value).send(...args)
 }
 
 export const getNewContract = (jsonInterface, address) =>

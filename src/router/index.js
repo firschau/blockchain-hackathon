@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Test from '../views/Test.vue'
+import Claims from '../views/Claims.vue'
+import Authorities from '../views/Authorities.vue'
+import IdentityContracts from '../views/IdentityContracts.vue'
 
 Vue.use(VueRouter)
 
@@ -12,8 +14,16 @@ const routes = [
         component: Home,
     },
     {
-        path: '/test',
-        component: Test,
+        path: '/claims',
+        component: Claims,
+    },
+    {
+        path: '/authorities',
+        component: Authorities,
+    },
+    {
+        path: '/identityContracts',
+        component: IdentityContracts,
     },
 ]
 
