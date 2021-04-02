@@ -9,13 +9,7 @@
         >
         </v-autocomplete>
 
-        <v-btn
-            @click="isAddClaimDialogOpen = true"
-            :disabled="!identityContract"
-            color="primary"
-        >
-            addClaim
-        </v-btn>
+        <v-btn @click="isAddClaimDialogOpen = true" :disabled="!identityContract" color="primary"> addClaim </v-btn>
 
         <v-dialog v-model="isAddClaimDialogOpen" width="700">
             <v-card>
@@ -26,11 +20,7 @@
                 <v-card-text>
                     <v-row>
                         <v-col>
-                            <v-select
-                                label="Claim Type"
-                                :items="claimTypes"
-                                v-model="selectedClaimType"
-                            ></v-select>
+                            <v-select label="Claim Type" :items="claimTypes" v-model="selectedClaimType"></v-select>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -64,69 +54,30 @@
                 <v-card-actions>
                     <v-btn @click="isAddClaimDialogOpen = false">Cancel</v-btn>
                     <v-spacer />
-                    <v-btn
-                        @click="addClaim"
-                        color="primary"
-                        :disabled="!expirationDate || !selectedClaimType"
-                    >
+                    <v-btn @click="addClaim" color="primary" :disabled="!expirationDate || !selectedClaimType">
                         Add Claim
                     </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-
-        <v-snackbar v-model="snackbar" color="success" :timeout="5000">
-            {{
-                `${this.selectedClaimType} was added to ${
-                    this.identityContract
-                        ? this.identityContract.idcAddress
-                        : ''
-                }`
-            }}
-        </v-snackbar>
     </v-container>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { getNewContract } from '../utils/drizzle'
+import { mapGetters, mapState } from 'vuex'
 import { addClaim, claimTypes } from '../utils/claims'
-import IdentityContractFactory from '../contracts/IdentityContractFactory.json'
 
 export default {
     name: 'Claims',
 
     data: () => ({
-        snackbar: false,
         isAddClaimDialogOpen: false,
         identityContract: null,
-        identityContracts: [],
         claimTypes: Object.keys(claimTypes),
         selectedClaimType: null,
-        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365)
-            .toISOString()
-            .substring(0, 10),
+        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365).toISOString().substring(0, 10),
         isDatePickerOpen: false,
     }),
-
-    created() {
-        const identityContractFactory = getNewContract(
-            IdentityContractFactory,
-            this.drizzleInstance.contracts.IdentityContractFactory.address
-        )
-
-        identityContractFactory
-            .getPastEvents('IdentityContractCreation', {
-                fromBlock: 'earliest',
-                toBlock: 'latest',
-            })
-            .then((events) => {
-                this.identityContracts = events.map((event) => ({
-                    idcAddress: event.returnValues.idcAddress,
-                    owner: event.returnValues.owner,
-                }))
-            })
-    },
 
     methods: {
         addClaim() {
@@ -138,16 +89,14 @@ export default {
                     expiryDate: +new Date(this.expirationDate),
                 },
                 this.drizzleInstance.contracts.IdentityContract.address
-            ).then((response) => {
-                console.log(response)
-                this.snackbar = true
-                this.isAddClaimDialogOpen = false
-            })
+            )
         },
     },
 
     computed: {
+        ...mapState('identityContracts', ['identityContracts']),
         ...mapGetters('drizzle', ['drizzleInstance']),
+        // formated date to show in the date picker
         formattedDate() {
             return new Date(this.expirationDate).toLocaleDateString()
         },
