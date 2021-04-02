@@ -1,6 +1,10 @@
 <template>
     <v-app v-if="isDrizzleInitialized">
-        <v-app-bar app color="primary" dark> </v-app-bar>
+        <v-app-bar app color="primary" dark>
+            <v-container>
+                <h5>Current Account: {{ activeAccount }}</h5>
+            </v-container>
+        </v-app-bar>
 
         <v-navigation-drawer app>
             <v-list>
@@ -36,6 +40,7 @@ export default {
 
     computed: {
         ...mapGetters('drizzle', ['isDrizzleInitialized']),
+        ...mapGetters('accounts', ['activeAccount']),
     },
 }
 </script>
