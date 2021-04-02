@@ -35,12 +35,29 @@
                     </v-row>
                     <v-row>
                         <v-col>
-                            <v-text-field
-                                v-model="expiresIn"
-                                type="number"
-                                label="Expires in..."
-                                hint="days"
-                            ></v-text-field>
+                            <v-menu
+                                v-model="isDatePickerOpen"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="auto"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="formattedDate"
+                                        label="Expiration Date"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                    v-model="expirationDate"
+                                    @input="isDatePickerOpen = false"
+                                ></v-date-picker>
+                            </v-menu>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -50,7 +67,7 @@
                     <v-btn
                         @click="addClaim"
                         color="primary"
-                        :disabled="!expiresIn || !selectedClaimType"
+                        :disabled="!expirationDate || !selectedClaimType"
                     >
                         Add Claim
                     </v-btn>
@@ -86,7 +103,10 @@ export default {
         identityContracts: [],
         claimTypes: Object.keys(claimTypes),
         selectedClaimType: null,
-        expiresIn: 365,
+        expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365)
+            .toISOString()
+            .substring(0, 10),
+        isDatePickerOpen: false,
     }),
 
     created() {
@@ -115,8 +135,7 @@ export default {
                 claimTypes[this.selectedClaimType],
                 {
                     startDate: Date.now(),
-                    expiryDate:
-                        Date.now() + this.expiresIn * 24 * 60 * 60 * 1000,
+                    expiryDate: +new Date(this.expirationDate),
                 },
                 this.drizzleInstance.contracts.IdentityContract.address
             ).then((response) => {
@@ -129,6 +148,9 @@ export default {
 
     computed: {
         ...mapGetters('drizzle', ['drizzleInstance']),
+        formattedDate() {
+            return new Date(this.expirationDate).toLocaleDateString()
+        },
     },
 }
 </script>
