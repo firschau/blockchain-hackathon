@@ -9,7 +9,6 @@ export const currentUserModule = {
     },
     actions: {
         setIsMarketAuthority(ctx, newVal) {
-            console.log(newVal)
             ctx.commit('SET_ISMARKETAUTHORITY', newVal)
         },
     },
