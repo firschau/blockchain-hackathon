@@ -1,8 +1,8 @@
 <template>
     <v-app v-if="isDrizzleInitialized">
-        <v-app-bar app color="primary" dark> </v-app-bar>
+        <v-app-bar app color="primary" clipped-left dark> </v-app-bar>
 
-        <v-navigation-drawer app>
+        <v-navigation-drawer clipped app>
             <v-list>
                 <v-list-item
                     v-for="navItem in navItems"
