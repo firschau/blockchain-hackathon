@@ -35,15 +35,19 @@ export default {
     }),
 
     methods: {
+        /**
+         * updates the global isMarketAuthority state
+         */
         updateIsMarketAuthority() {
+            // get the owner of the market authority identity contract
             this.drizzleInstance.contracts.IdentityContract.methods
                 .owner()
                 .call()
                 .then((owner) => {
+                    // check if the the active account is the owner of the market authority identity contract
                     const isMarketAuthority = owner === this.activeAccount
 
-                    console.log(owner === this.activeAccount)
-
+                    // set the global state
                     this.$store.dispatch(
                         'currentUser/setIsMarketAuthority',
                         isMarketAuthority
@@ -53,11 +57,14 @@ export default {
     },
 
     watch: {
+        // call updateIsMarketAuthority when drizzle is initialized
         isDrizzleInitialized(val) {
             if (val) {
                 this.updateIsMarketAuthority()
             }
         },
+
+        // call updateIsMarketAuthority again when the active account changes
         activeAccount() {
             this.updateIsMarketAuthority()
         },
