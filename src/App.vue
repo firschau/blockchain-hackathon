@@ -34,8 +34,38 @@ export default {
         ],
     }),
 
+    methods: {
+        updateIsMarketAuthority() {
+            this.drizzleInstance.contracts.IdentityContract.methods
+                .owner()
+                .call()
+                .then((owner) => {
+                    const isMarketAuthority = owner === this.activeAccount
+
+                    console.log(owner === this.activeAccount)
+
+                    this.$store.dispatch(
+                        'currentUser/setIsMarketAuthority',
+                        isMarketAuthority
+                    )
+                })
+        },
+    },
+
+    watch: {
+        isDrizzleInitialized(val) {
+            if (val) {
+                this.updateIsMarketAuthority()
+            }
+        },
+        activeAccount() {
+            this.updateIsMarketAuthority()
+        },
+    },
+
     computed: {
-        ...mapGetters('drizzle', ['isDrizzleInitialized']),
+        ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
+        ...mapGetters('accounts', ['activeAccount']),
     },
 }
 </script>
