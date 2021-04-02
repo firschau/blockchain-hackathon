@@ -2,9 +2,8 @@
     <v-app v-if="isDrizzleInitialized">
         <v-app-bar app color="primary" clipped-left dark>
             <v-app-bar-nav-icon @click="isNavDrawerOpen = !isNavDrawerOpen"></v-app-bar-nav-icon>
-            <h5 class="ml-4 text-h5">
-                {{ appTitle }}
-            </h5>
+            <h5 class="ml-4 text-h5">{{ appTitle }}</h5>
+            <h6 class="ml-auto text-h6">Account: {{ activeAccount }}</h6>
         </v-app-bar>
 
         <v-navigation-drawer v-model="isNavDrawerOpen" clipped app>
