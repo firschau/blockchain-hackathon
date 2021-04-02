@@ -122,4 +122,8 @@ module.exports = {
     },
 
     contracts_build_directory: path.join(__dirname, 'src/contracts'),
+
+    ens: {
+        enabled: true,
+    },
 }
