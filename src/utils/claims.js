@@ -32,11 +32,7 @@ export const addClaim = async (address, topic, data, issuerAddress) => {
 
     const activeAccount = store.getters['accounts/activeAccount']
 
-    return await store.getters['drizzle/drizzleInstance'].web3.eth
-        .sign(hash, activeAccount)
-        .then((signature) => {
-            return authority.methods
-                .addClaim(topic, 1, issuerAddress, signature, data, '')
-                .send({ from: activeAccount })
-        })
+    return await store.getters['drizzle/drizzleInstance'].web3.eth.sign(hash, activeAccount).then((signature) => {
+        return authority.methods.addClaim(topic, 1, issuerAddress, signature, data, '').send({ from: activeAccount })
+    })
 }

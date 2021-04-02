@@ -21,8 +21,7 @@
 const path = require('path')
 
 const HDWalletProvider = require('truffle-hdwallet-provider')
-const mnemonic =
-    'gas october undo antenna obvious turtle sunny lazy blanket near liberty august'
+const mnemonic = 'gas october undo antenna obvious turtle sunny lazy blanket near liberty august'
 // const infuraKey = "fj4jll3k.....";
 //
 // const fs = require('fs');
@@ -88,11 +87,7 @@ module.exports = {
         // }
 
         volta: {
-            provider: () =>
-                new HDWalletProvider(
-                    mnemonic,
-                    'https://volta-rpc.energyweb.org'
-                ),
+            provider: () => new HDWalletProvider(mnemonic, 'https://volta-rpc.energyweb.org'),
             network_id: 73799,
             gas: 7000000,
         },
@@ -122,4 +117,8 @@ module.exports = {
     },
 
     contracts_build_directory: path.join(__dirname, 'src/contracts'),
+
+    ens: {
+        enabled: true,
+    },
 }
