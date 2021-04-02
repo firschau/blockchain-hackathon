@@ -2,9 +2,9 @@
     <v-app v-if="isDrizzleInitialized">
         <v-app-bar app color="primary" clipped-left dark>
             <v-app-bar-nav-icon @click="isNavDrawerOpen = !isNavDrawerOpen"></v-app-bar-nav-icon>
-            <v-app-bar-title>
+            <h5 class="ml-4 text-h5">
                 {{ appTitle }}
-            </v-app-bar-title>
+            </h5>
         </v-app-bar>
 
         <v-navigation-drawer v-model="isNavDrawerOpen" clipped app>
@@ -64,15 +64,20 @@ export default {
         ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
         ...mapGetters('accounts', ['activeAccount']),
         appTitle() {
+            let title = ''
             if (this.$store.state.currentUser.isMarketAuthority) {
-                return 'Market Authority'
-            } else if (this.$store.state.currentUser.isBalanceAuthority) {
-                return 'Balance Authority'
-            } else if (this.$store.state.currentUser.isMeteringAuthority) {
-                return 'Metering Authority'
-            } else if (this.$store.state.currentUser.isPhysicalAssetAuthority) {
-                return 'Physical Asset Authority'
-            } else return ''
+                title += 'Market Authority '
+            }
+            if (this.$store.state.currentUser.isBalanceAuthority) {
+                title += 'Balance Authority '
+            }
+            if (this.$store.state.currentUser.isMeteringAuthority) {
+                title += 'Metering Authority '
+            }
+            if (this.$store.state.currentUser.isPhysicalAssetAuthority) {
+                title += 'Physical Asset Authority '
+            }
+            return title
         },
     },
 }

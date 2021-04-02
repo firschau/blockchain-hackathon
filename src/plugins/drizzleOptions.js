@@ -1,6 +1,7 @@
 import IdentityContractFactory from '@/contracts/IdentityContractFactory.json'
 import IdentityContract from '@/contracts/IdentityContract.json'
-import ClaimVerifier from '../contracts/ClaimVerifier.json'
+import EnergyToken from '@/contracts/EnergyToken.json'
+import Distributor from '@/contracts/Distributor.json'
 
 import Web3 from 'web3'
 
@@ -15,9 +16,8 @@ const options = {
             url: 'ws://127.0.0.1:8545',
         },
     },
-    contracts: [IdentityContract, IdentityContractFactory, ClaimVerifier],
+    contracts: [IdentityContract, IdentityContractFactory, EnergyToken, Distributor],
     events: {
-        SimpleStorage: ['StorageSet'],
         IdentityContractFactory: ['IdentityContractCreation'],
     },
     polls: {
