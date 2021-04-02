@@ -29,7 +29,7 @@
                             ></v-select>
                         </v-col>
                     </v-row>
-                    <v-row>
+                    <v-row v-if="selectedClaimType">
                         <v-col>
                             <v-menu
                                 v-model="isDatePickerOpen"
@@ -189,7 +189,7 @@ export default {
 
         // formated date to show in the date picker
         formattedDate() {
-            return new Date(this.expirationDate).toLocaleDateString()
+            return new Date(this.formData.expirationDate).toLocaleDateString()
         },
 
         // filtered claim types by active account
