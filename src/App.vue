@@ -2,17 +2,27 @@
     <v-app v-if="isDrizzleInitialized" class="app">
         <v-app-bar app color="black" clipped-left dark>
             <v-app-bar-nav-icon @click="isNavDrawerOpen = !isNavDrawerOpen"></v-app-bar-nav-icon>
-            ><v-img :src="require('./assets/logo-enbw.png')" class="text-center" contain max-height="50" />
+            <v-app-bar-title>
+                <v-img :src="require('./assets/logo-enbw.png')" contain max-height="50" width="250" />
+            </v-app-bar-title>
         </v-app-bar>
 
         <v-navigation-drawer v-model="isNavDrawerOpen" clipped app class="drawer">
-            <p>
-                Active Account:<br />
-                {{ activeAccount }} <br />
-                Role: <br />
-                {{ appTitle }}
-            </p>
-            <hr />
+            <v-list>
+                <v-list-item>
+                    <v-list-item-content>
+                        <v-list-item-title>Active Account:</v-list-item-title>
+                        <v-list-item-subtitle>{{ activeAccount }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                    <v-list-item-content>
+                        <v-list-item-title>Role:</v-list-item-title>
+                        <v-list-item-subtitle>{{ appTitle }}</v-list-item-subtitle>
+                    </v-list-item-content>
+                </v-list-item>
+            </v-list>
+            <v-divider />
             <v-list>
                 <v-list-item v-for="navItem in navItems" :key="navItem.text" :to="navItem.to">{{
                     navItem.text
@@ -99,5 +109,8 @@ export default {
 
 #drawer {
     background-color: lightgray;
+}
+
+.enbwLogo {
 }
 </style>
