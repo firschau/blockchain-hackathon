@@ -1,12 +1,18 @@
 <template>
-    <v-app v-if="isDrizzleInitialized">
-        <v-app-bar app color="primary" clipped-left dark>
+    <v-app v-if="isDrizzleInitialized" class="app">
+        <v-app-bar app color="black" clipped-left dark>
             <v-app-bar-nav-icon @click="isNavDrawerOpen = !isNavDrawerOpen"></v-app-bar-nav-icon>
-            <h5 class="ml-4 text-h5">{{ appTitle }}</h5>
-            <h6 class="ml-auto text-h6">Account: {{ activeAccount }}</h6>
+            ><v-img :src="require('./assets/logo-enbw.png')" class="text-center" contain max-height="50" />
         </v-app-bar>
 
-        <v-navigation-drawer v-model="isNavDrawerOpen" clipped app>
+        <v-navigation-drawer v-model="isNavDrawerOpen" clipped app class="drawer">
+            <p>
+                Active Account:<br />
+                {{ activeAccount }} <br />
+                Role: <br />
+                {{ appTitle }}
+            </p>
+            <hr />
             <v-list>
                 <v-list-item v-for="navItem in navItems" :key="navItem.text" :to="navItem.to">{{
                     navItem.text
@@ -81,3 +87,17 @@ export default {
     },
 }
 </script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+
+#app {
+    font-family: 'Poppins', sans-serif;
+    background-image: url(assets/background.png);
+    background-size: cover;
+}
+
+#drawer {
+    background-color: lightgray;
+}
+</style>
