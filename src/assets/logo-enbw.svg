@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="312.275" height="59" viewBox="0 0 312.275 59">
+  <g id="Komponente_1_1" data-name="Komponente 1 – 1" transform="translate(1)">
+    <g id="layer1" transform="translate(-20.001 -15.024)">
+      <g id="Ebene_x0020_1" transform="translate(20.001 28.024)">
+        <g id="_47774088" transform="translate(0)">
+          <path id="_94562272" d="M452.47,49.776a12.795,12.795,0,0,1,9.124-21.752H484.6v7.681H461.594a5.113,5.113,0,0,0,0,10.225h15.284v7.677H461.594a5.112,5.112,0,0,0,0,10.223H484.6v7.683H461.594a12.785,12.785,0,0,1-9.124-21.738Zm58.983-1.345a5.114,5.114,0,0,1,5.083,5.1V71.515h7.681V53.532a12.794,12.794,0,0,0-12.764-12.781H490.967V71.474h7.675V48.432Zm88.179,19.424a12.785,12.785,0,0,1-21.74-9.122v-30.7h7.679v30.7a5.114,5.114,0,0,0,10.229,0V40.82h7.681V58.734a5.11,5.11,0,0,0,10.219,0v-30.7h7.681v30.7a12.792,12.792,0,0,1-21.749,9.122ZM539.545,35.709V56.162h-7.674V28.028h25.583a12.792,12.792,0,0,1,9.122,21.752,12.781,12.781,0,0,1-9.122,21.735H531.871V63.837h25.583a5.113,5.113,0,0,0,0-10.225h-10.24V45.932h10.24a5.112,5.112,0,0,0,0-10.223Z" transform="translate(-310.107 -33.774)" fill="#fff" fill-rule="evenodd"/>
+          <path id="_93913832" d="M23.624,93.979c-2,0-3.624-1.076-3.624-2.4s1.623-2.4,3.624-2.4H150.164v4.8l-71.823.007Z" transform="translate(-20 -75.581)" fill="#f90" fill-rule="evenodd"/>
+        </g>
+      </g>
+    </g>
+    <text id="BLOCKCHAIN_M_A_R_K_E_T_S" data-name="BLOCKCHAIN
+M A R K E T S" transform="translate(65 21)" fill="#fff" font-size="20" font-family="Poppins-SemiBold, Poppins" font-weight="600"><tspan x="-65.32" y="0">BLOCKCHAIN</tspan><tspan font-size="20.5"><tspan x="-62.166" y="31">M A R K E T S</tspan></tspan></text>
+  </g>
+</svg>
