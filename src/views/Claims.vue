@@ -50,7 +50,7 @@
                                     ></v-text-field>
                                 </template>
                                 <v-date-picker
-                                    v-model="formData.expirationDate"
+                                    v-model="formData.expiryDate"
                                     @input="isDatePickerOpen = false"
                                 ></v-date-picker>
                             </v-menu>
@@ -102,7 +102,10 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { addClaim, claimTypes } from '../utils/claims'
+import { claimTypes } from '../utils/claims'
+import { getNewContract } from '../utils/drizzle'
+import IdentityContract from '../contracts/IdentityContract.json'
+import Distributor from '../contracts/Distributor.json'
 
 export default {
     name: 'Claims',
@@ -114,8 +117,12 @@ export default {
             selectedClaimType: null,
             isDatePickerOpen: false,
             formData: {
-                expirationDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365).toISOString().substring(0, 10),
+                expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365).toISOString().substring(0, 10),
                 startDate: Date.now(),
+                realWorldPlantId: 'BestPlantId',
+                maxGen: 5000000,
+                maxCon: 5000000,
+                type: 'generator',
             },
             claimTypes: [
                 {
@@ -158,27 +165,95 @@ export default {
                     value: claimTypes.LocationClaim,
                     filter: () => this.isPhysicalAssetAuthority,
                 },
+                {
+                    name: 'Accepted Distributor Contracts Claim',
+                    value: claimTypes.AcceptedDistributorClaim,
+                    filter: () => this.isBalanceAuthority,
+                },
             ],
         }
     },
 
     methods: {
+        hexlifyData(data) {
+            return this.drizzleInstance.web3.utils.toHex(data)
+        },
+        getHash(address, topic, data) {
+            return this.drizzleInstance.web3.utils.soliditySha3(address, topic, data)
+        },
         addClaim() {
-            const data = this.formData
+            let data = {
+                startDate: this.formData.startDate,
+                expiryDate: +new Date(this.formData.expiryDate),
+            }
 
-            data.expirationDate = +new Date(data.expirationDate)
+            if (
+                this.selectedClaimType === 10130 ||
+                this.selectedClaimType === 10050 ||
+                this.selectedClaimType === 10060 ||
+                this.selectedClaimType === 10070 ||
+                this.selectedClaimType === 10080 ||
+                this.selectedClaimType === 10040 ||
+                this.selectedClaimType === 10065
+            ) {
+                data.realWorldPlantId = this.formData.realWorldPlantId
+            }
 
-            addClaim(
-                this.identityContract.idcAddress,
-                claimTypes[this.selectedClaimType],
-                data,
-                this.drizzleInstance.contracts.IdentityContract.address
-            )
+            if (this.selectedClaimType === 10060) {
+                data.type = this.formData.type
+            }
+
+            if (this.selectedClaimType === 10065) {
+                data.maxGen = this.formData.maxGen
+            }
+
+            if (this.selectedClaimType === 10140) {
+                data.maxCon = this.formData.maxCon
+            }
+
+            let targetAddress = this.identityContract.idcAddress
+            // target Identity Contract as web3 Contract Object
+            let targetIdentityContract = getNewContract(IdentityContract, targetAddress)
+
+            if (this.selectedClaimType === 10120) {
+                data.address = this.identityContract.idcAddress.toString().slice(2).toLowerCase()
+                data.t = 't'
+                data.realWorldPlantId = 'dsfewfewf'
+                console.log(JSON.stringify(data))
+                targetAddress = this.drizzleInstance.contracts.Distributor.address
+                console.log(targetAddress)
+
+                targetIdentityContract = getNewContract(Distributor, targetAddress)
+                console.log(targetIdentityContract)
+            }
+
+            // takes the users first activeAccount Identity Contract as issuer
+            // won't work if the user has multiple identity contracts
+            const issuerAddress = this.activeAccountIdentityContracts[0].idcAddress
+
+            console.log(data)
+            const hexlifiedData = this.hexlifyData(data)
+
+            const hashToSign = this.getHash(targetAddress, this.selectedClaimType, hexlifiedData)
+            console.log(hashToSign)
+
+            this.drizzleInstance.web3.eth.sign(hashToSign, this.activeAccount).then((signature) => {
+                console.log(this.selectedClaimType)
+                console.log(1)
+                console.log(issuerAddress)
+                console.log(signature)
+                console.log(hexlifiedData)
+                console.log('')
+                targetIdentityContract.methods
+                    .addClaim(this.selectedClaimType, 1, issuerAddress, signature, hexlifiedData, '')
+                    .send({ from: this.activeAccount })
+            })
         },
     },
 
     computed: {
         ...mapState('identityContracts', ['identityContracts']),
+        ...mapGetters('identityContracts', ['activeAccountIdentityContracts']),
         ...mapState('currentUser', [
             'isBalanceAuthority',
             'isMarketAuthority',
@@ -186,18 +261,16 @@ export default {
             'isPhysicalAssetAuthority',
         ]),
         ...mapGetters('drizzle', ['drizzleInstance']),
+        ...mapGetters('accounts', ['activeAccount']),
 
         // formated date to show in the date picker
         formattedDate() {
-            return new Date(this.formData.expirationDate).toLocaleDateString()
+            return new Date(this.formData.expiryDate).toLocaleDateString()
         },
 
         // filtered claim types by active account
         filteredClaimTypes() {
             return this.claimTypes.filter((claimType) => {
-                console.log(this.isMarketAuthority)
-                console.log(claimType.filter())
-                console.log(claimType.filter())
                 return claimType.filter()
             })
         },

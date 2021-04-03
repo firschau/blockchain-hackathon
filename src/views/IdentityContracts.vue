@@ -4,7 +4,9 @@
             <v-card-title>
                 <h2>My Identity Contracts</h2>
                 <v-spacer />
-                <v-btn @click="createNew" color="primary"> Create New Identity Contract </v-btn>
+                <v-btn @click="createNew" color="primary" :disabled="!!activeAccountIdentityContracts.length">
+                    Create New Identity Contract
+                </v-btn>
             </v-card-title>
             <v-card-text>
                 <v-list>

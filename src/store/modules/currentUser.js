@@ -58,18 +58,6 @@ export const currentUserModule = {
             // reset the state
             ctx.commit('RESET')
 
-            // get the owner of the market authority identity contract
-            store.getters['drizzle/drizzleInstance'].contracts.IdentityContract.methods
-                .owner()
-                .call()
-                .then((owner) => {
-                    // check if the the active account is the owner of the market authority identity contract
-                    const isMarketAuthority = owner === store.getters['accounts/activeAccount']
-
-                    // set the global state
-                    ctx.commit('SET_ISMARKETAUTHORITY', isMarketAuthority)
-                })
-
             // load all identity contracts first
             store.dispatch('identityContracts/getAndSetIdentityContracts').then(() => {
                 // identity contracts of the active account
@@ -79,6 +67,16 @@ export const currentUserModule = {
                 const identityContracts = activeAccountIdentityContracts.map((idc) =>
                     getNewContract(IdentityContract, idc.idcAddress)
                 )
+
+                const marketAuthority = identityContracts.find(
+                    (contract) =>
+                        contract.options.address ===
+                        store.getters['drizzle/drizzleInstance'].contracts.IdentityContract.address
+                )
+
+                if (marketAuthority) {
+                    ctx.commit('SET_ISMARKETAUTHORITY', true)
+                }
 
                 identityContracts.forEach((idc) => {
                     // check if any of the identity contracts has a balance authority claim

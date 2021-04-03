@@ -21,21 +21,30 @@ export const identityContractsModule = {
         ADD_IDENTITY_CONTRACT(state, newIdentityContract) {
             state.identityContracts.push(newIdentityContract)
         },
+        ADD_IDENTITY_CONTRACTS(state, newIdentityContracts) {
+            state.identityContracts.push(...newIdentityContracts)
+        },
     },
     actions: {
-        getAndSetIdentityContracts(ctx) {
+        async getAndSetIdentityContracts(ctx) {
             if (ctx.state.identityContracts.length) {
                 return Promise.resolve(ctx.state.identityContracts)
             } else {
                 const drizzleInstance = store.getters['drizzle/drizzleInstance']
+
+                const marketAuthorityOwner = await drizzleInstance.contracts.IdentityContract.methods.owner().call()
+
+                const marketAuthority = {
+                    owner: marketAuthorityOwner,
+                    idcAddress: drizzleInstance.contracts.IdentityContract.address,
+                }
 
                 const identityContractFactory = getNewContract(
                     IdentityContractFactory,
                     drizzleInstance.contracts.IdentityContractFactory.address
                 )
 
-                // get all past events for created Identity Contracts
-                return identityContractFactory
+                const identityContracts = await identityContractFactory
                     .getPastEvents('IdentityContractCreation', {
                         fromBlock: 'earliest',
                         toBlock: 'latest',
@@ -46,11 +55,12 @@ export const identityContractsModule = {
                             owner: event.returnValues.owner,
                         }))
 
-                        // set the state
-                        ctx.commit('SET_IDENTITY_CONTRACTS', identityContracts)
-
                         return identityContracts
                     })
+
+                ctx.commit('ADD_IDENTITY_CONTRACTS', [marketAuthority, ...identityContracts])
+
+                return [marketAuthority, ...identityContracts]
             }
         },
         addIdentityContract(ctx, identityContract) {
