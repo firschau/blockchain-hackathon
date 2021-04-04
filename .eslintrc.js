@@ -5,7 +5,7 @@ module.exports = {
         es6: true,
         node: true,
     },
-    ignorePatterns: ['/test/**', 'gulpfile.js', 'setup.js', 'migrations/**'],
+    ignorePatterns: ['/test/**', 'gulpfile.js', 'setup.js', 'migrations/**', 'test.js', 'truffleScripts/**'],
     extends: ['plugin:vue/essential', 'eslint:recommended', '@vue/prettier'],
     globals: {
         Atomics: 'readonly',
