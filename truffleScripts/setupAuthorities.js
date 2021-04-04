@@ -8,10 +8,14 @@ const account9Sk = '0x5b1b39d1cf63bdef178e6ad182b1ae852ac6b26a802121ab2c4df93666
 
 var IdentityContract = artifacts.require('IdentityContract.sol')
 var IdentityContractFactory = artifacts.require('IdentityContractFactory.sol')
+var EnergyToken = artifacts.require('EnergyToken.sol')
+var Distributor = artifacts.require('Distributor.sol')
 
 let accounts
 
 let marketAuthority
+
+let idcs = []
 
 module.exports = async function (callback) {
     accounts = await web3.eth.getAccounts()
@@ -29,12 +33,12 @@ module.exports = async function (callback) {
     balanceAuthority = new web3.eth.Contract(abi, balanceAuthorityAddress)
     console.log(`Successfully deployed Balance Authority IDC with address: ${balanceAuthority.options.address}`)
 
-    let meteringAuthorityDeployment = await identityContractFactory.createIdentityContract({ from: accounts[8] })
+    let meteringAuthorityDeployment = await identityContractFactory.createIdentityContract({ from: accounts[7] })
     let meteringAuthorityAddress = meteringAuthorityDeployment.logs[0].args.idcAddress
     meteringAuthority = new web3.eth.Contract(abi, meteringAuthorityAddress)
     console.log(`Successfully deployed Metering Authority IDC with address: ${meteringAuthority.options.address}`)
 
-    let physicalAssetAuthorityDeployment = await identityContractFactory.createIdentityContract({ from: accounts[8] })
+    let physicalAssetAuthorityDeployment = await identityContractFactory.createIdentityContract({ from: accounts[6] })
     let physicalAssetAuthorityAddress = physicalAssetAuthorityDeployment.logs[0].args.idcAddress
     physicalAssetAuthority = new web3.eth.Contract(abi, physicalAssetAuthorityAddress)
     console.log(
@@ -72,6 +76,25 @@ module.exports = async function (callback) {
                 .send({ from: accounts[0], gas: 7000000 })
         }
     }
+
+    for (let i = 0; i < 3; i++) {
+        try {
+            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 5] })
+            let idcAddress = idcDeployment.logs[0].args.idcAddress
+            idcs[i] = new web3.eth.Contract(abi, idcAddress)
+            console.log(`Successfully deployed IdentityContract ${i} with address: ${idcs[i].options.address}`)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    energyToken = await EnergyToken.deployed()
+    energyTokenWeb3 = new web3.eth.Contract(EnergyToken.abi, energyToken.address)
+    console.log(`Successfully deployed EnergyToken with address: ${energyToken.address}`)
+
+    distributor = await Distributor.deployed()
+    distributorWeb3 = new web3.eth.Contract(Distributor.abi, distributor.address)
+    console.log(`Successfully deployed Distributor with address: ${distributor.address}`)
 
     callback()
 }
