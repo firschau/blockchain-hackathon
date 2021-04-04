@@ -40,53 +40,62 @@ module.exports = async function (callback) {
     const [balanceAuthority, meteringAuthority, physicalAssetAuthority, ...idcs] = events.map(
         (event) => new web3.eth.Contract(abi, event.returnValues.idcAddress)
     )
+    console.log(balanceAuthority.options.address)
 
-    // async function addClaim(subject, topic, issuerAddress, data, uri, signingKey) {
-    //     // Handle difference between Truffle contract object and web3 contract object.
-    //     let isWeb3Contract = false
-    //     let subjectAddress = subject.address
-    //     if (subjectAddress === undefined) {
-    //         isWeb3Contract = true
-    //         subjectAddress = subject.options.address
-    //     }
+    async function addClaim(subject, topic, issuerAddress, data, uri, signingKey) {
+        // Handle difference between Truffle contract object and web3 contract object.
+        let isWeb3Contract = false
+        let subjectAddress = subject.address
+        if (subjectAddress === undefined) {
+            isWeb3Contract = true
+            subjectAddress = subject.options.address
+        }
 
-    //     let hash = web3.utils.soliditySha3(subjectAddress, topic, data)
-    //     let signatureSplit = await eutil.ecsign(
-    //         new Buffer(hash.slice(2), 'hex'),
-    //         new Buffer(signingKey.slice(2), 'hex')
-    //     )
-    //     let signatureMerged =
-    //         '0x' + signatureSplit.r.toString('hex') + signatureSplit.s.toString('hex') + signatureSplit.v.toString(16)
+        let hash = web3.utils.soliditySha3(subjectAddress, topic, data)
+        let signatureSplit = await eutil.ecsign(
+            new Buffer(hash.slice(2), 'hex'),
+            new Buffer(signingKey.slice(2), 'hex')
+        )
+        let signatureMerged =
+            '0x' + signatureSplit.r.toString('hex') + signatureSplit.s.toString('hex') + signatureSplit.v.toString(16)
 
-    //     if (!isWeb3Contract) {
-    //         await subject.addClaim(topic, 1, issuerAddress, signatureMerged, data, uri)
-    //     } else {
-    //         await subject.methods
-    //             .addClaim(topic, 1, issuerAddress, signatureMerged, data, uri)
-    //             .send({ from: accounts[0], gas: 7000000 })
-    //     }
-    // }
+        if (!isWeb3Contract) {
+            await subject.addClaim(topic, 1, issuerAddress, signatureMerged, data, uri)
+        } else {
+            await subject.methods
+                .addClaim(topic, 1, issuerAddress, signatureMerged, data, uri)
+                .send({ from: accounts[0], gas: 7000000 })
+        }
+    }
+    if (idcs.length == 0) {
+        for (let i = 0; i < 3; i++) {
+            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 5] })
+            assert.equal(balanceAuthorityDeployment.logs[0].event, 'IdentityContractCreation')
+            let idcAddress = idcDeployment.logs[0].args.idcAddress
+            idcs[i] = new web3.eth.Contract(abi, idcAddress)
+        }
+    }
 
-    // try {
-    //     const claimIds = await distributor.getClaimIdsByTopic(10120)
+    try {
+        const claimIds = await distributor.getClaimIdsByTopic(10120)
 
-    //     console.log(claimIds[0])
-    //     const claim = await distributor.getClaim(claimIds[0])
-    //     console.log(claim)
-    // } catch (e) {
-    //     console.log(e)
-    // }
+        console.log(claimIds[0])
+        const claim = await distributor.getClaim(claimIds[0])
+        console.log(claim)
+    } catch (e) {
+        console.log(e)
+    }
 
-    // try {
-    //     let jsonAcceptedDistributor =
-    //         '{ "t": "t", "expiryDate": "1895220001", "startDate": "1", "address": "' +
-    //         idcs[2].options.address.slice(2).toLowerCase() +
-    //         '" }'
-    //     let dataAcceptedDistributor = web3.utils.toHex(jsonAcceptedDistributor)
-    //     await addClaim(distributor, 10120, balanceAuthority.options.address, dataAcceptedDistributor, '', account8Sk)
-    // } catch (e) {
-    //     console.log(e)
-    // }
+    try {
+        let jsonAcceptedDistributor =
+            '{ "t": "t", "expiryDate": "1895220001", "startDate": "1", "address": "' +
+            idcs[2].options.address.slice(2).toLowerCase() +
+            '" }'
+        let dataAcceptedDistributor = web3.utils.toHex(jsonAcceptedDistributor)
+        await addClaim(distributor, 10120, balanceAuthority.options.address, dataAcceptedDistributor, '', account8Sk)
+    } catch (e) {
+        console.log(e)
+    }
 
     callback()
 }

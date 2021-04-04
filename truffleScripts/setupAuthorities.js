@@ -10,23 +10,22 @@ var IdentityContract = artifacts.require('IdentityContract.sol')
 var IdentityContractFactory = artifacts.require('IdentityContractFactory.sol')
 var EnergyToken = artifacts.require('EnergyToken.sol')
 var Distributor = artifacts.require('Distributor.sol')
-
 let accounts
-
-let marketAuthority
 
 let idcs = []
 
+let marketAuthority
+
 module.exports = async function (callback) {
     accounts = await web3.eth.getAccounts()
+    let abi = IdentityContract.abi
+    IdentityContractFactoryWeb3 = new web3.eth.Contract(IdentityContractFactory.abi, IdentityContractFactory.address)
 
     marketAuthority = await IdentityContract.deployed()
     console.log(`Successfully deployed IdentityContract for Market Authority with address: ${marketAuthority.address}`)
 
     identityContractFactory = await IdentityContractFactory.deployed()
     console.log(`Successfully deployed IdentityContractFactory with address: ${identityContractFactory.address}`)
-
-    let abi = IdentityContract.abi
 
     let balanceAuthorityDeployment = await identityContractFactory.createIdentityContract({ from: accounts[8] })
     let balanceAuthorityAddress = balanceAuthorityDeployment.logs[0].args.idcAddress
@@ -76,10 +75,9 @@ module.exports = async function (callback) {
                 .send({ from: accounts[0], gas: 7000000 })
         }
     }
-
     for (let i = 0; i < 3; i++) {
         try {
-            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 5] })
+            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 3] })
             let idcAddress = idcDeployment.logs[0].args.idcAddress
             idcs[i] = new web3.eth.Contract(abi, idcAddress)
             console.log(`Successfully deployed IdentityContract ${i} with address: ${idcs[i].options.address}`)
