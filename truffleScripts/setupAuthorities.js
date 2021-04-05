@@ -79,7 +79,7 @@ module.exports = async function (callback) {
 
     for (let i = 0; i < 3; i++) {
         try {
-            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 5] })
+            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 3] })
             let idcAddress = idcDeployment.logs[0].args.idcAddress
             idcs[i] = new web3.eth.Contract(abi, idcAddress)
             console.log(`Successfully deployed IdentityContract ${i} with address: ${idcs[i].options.address}`)

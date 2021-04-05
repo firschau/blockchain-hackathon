@@ -23,34 +23,23 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'IdentityContracts',
 
-    created() {
-        // add Market Authority Identity Contract
-        this.drizzleInstance.contracts.IdentityContract.methods
-            .owner()
-            .call()
-            .then((owner) => {
-                this.identityContracts.push({
-                    idcAddress: this.drizzleInstance.contracts.IdentityContract.address,
-                    owner,
-                })
-            })
-    },
-
     methods: {
         createNew() {
-            this.drizzleInstance.contracts.IdentityContractFactory.methods.createIdentityContract().send()
+            this.drizzleInstance.contracts.IdentityContractFactory.methods
+                .createIdentityContract()
+                .send({ from: this.activeAccount })
         },
     },
 
     computed: {
-        ...mapState('identityContracts', ['identityContracts']),
         ...mapGetters('identityContracts', ['activeAccountIdentityContracts']),
         ...mapGetters('drizzle', ['drizzleInstance']),
+        ...mapGetters('accounts', ['activeAccount']),
     },
 }
 </script>

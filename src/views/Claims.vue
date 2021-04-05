@@ -1,15 +1,66 @@
 <template>
     <v-container>
-        <v-autocomplete
-            v-model="identityContract"
-            :items="identityContracts"
-            item-text="idcAddress"
-            return-object
-            label="Identity Contracts"
-        >
-        </v-autocomplete>
-
-        <v-btn @click="isAddClaimDialogOpen = true" :disabled="!identityContract" color="primary"> addClaim </v-btn>
+        <v-card>
+            <v-card-title class="text-h4">My Claims</v-card-title>
+            <v-card-text>
+                <div v-for="idc in activeAccountIdentityContracts" :key="idc.idcAddress">
+                    <v-divider class="mb-4" />
+                    <h4 class="text-h5">Identity Contract: {{ idc.idcAddress }}</h4>
+                    <v-row class="mt-2">
+                        <v-col v-for="claim in idc.claims" :key="claim.id">
+                            <v-sheet class="pa-2" outlined>
+                                <v-list>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>ID</v-list-item-title>
+                                            <v-list-item-subtitle>{{ claim.id }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>Topic</v-list-item-title>
+                                            <v-list-item-subtitle>{{
+                                                claimTypeToName(+claim.__topic)
+                                            }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>Issuer</v-list-item-title>
+                                            <v-list-item-subtitle>{{ claim.__issuer }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-title>Data</v-list-item-title>
+                                            <v-list-item-subtitle>{{ hexToAscii(claim.__data) }}</v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-list>
+                            </v-sheet>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-card-text>
+        </v-card>
+        <v-card class="mt-4">
+            <v-card-title class="text-h4">New Claims</v-card-title>
+            <v-card-text>
+                <v-autocomplete
+                    v-model="identityContract"
+                    :items="identityContracts"
+                    item-text="idcAddress"
+                    return-object
+                    label="Identity Contracts"
+                >
+                </v-autocomplete>
+            </v-card-text>
+            <v-card-actions>
+                <v-btn @click="isAddClaimDialogOpen = true" :disabled="!identityContract" color="primary">
+                    addClaim
+                </v-btn>
+            </v-card-actions>
+        </v-card>
 
         <v-dialog v-model="isAddClaimDialogOpen" width="700">
             <v-card>
@@ -56,17 +107,7 @@
                             </v-menu>
                         </v-col>
                     </v-row>
-                    <v-row
-                        v-if="
-                            selectedClaimType === 10130 ||
-                            selectedClaimType === 10050 ||
-                            selectedClaimType === 10060 ||
-                            selectedClaimType === 10070 ||
-                            selectedClaimType === 10080 ||
-                            selectedClaimType === 10040 ||
-                            selectedClaimType === 10065
-                        "
-                    >
+                    <v-row v-if="claimNeedsRealWorldPlantId(selectedClaimType)">
                         <v-col>
                             <v-text-field
                                 label="Real World Plant Id"
@@ -102,7 +143,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { claimTypes } from '../utils/claims'
+import { claimTypes, claimTypeToName } from '../utils/claims'
 import { getNewContract } from '../utils/drizzle'
 import IdentityContract from '../contracts/IdentityContract.json'
 import Distributor from '../contracts/Distributor.json'
@@ -117,97 +158,121 @@ export default {
             selectedClaimType: null,
             isDatePickerOpen: false,
             formData: {
-                expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365).toISOString().substring(0, 10),
+                expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365 * 10).toISOString().substring(0, 10),
                 startDate: Date.now(),
-                realWorldPlantId: 'BestPlantId',
-                maxGen: 5000000,
-                maxCon: 5000000,
-                type: 'generator',
+                realWorldPlantId: 'bestPlantId',
+                maxGen: 300000000,
+                maxCon: 150000000,
+                type: 'generation',
             },
             claimTypes: [
                 {
-                    name: 'Is Balance Authority Claim',
+                    name: claimTypeToName(claimTypes.IsBalanceAuthority),
                     value: claimTypes.IsBalanceAuthority,
                     filter: () => this.isMarketAuthority,
                 },
                 {
-                    name: 'Is Metering Authority Claim',
+                    name: claimTypeToName(claimTypes.IsMeteringAuthority),
                     value: claimTypes.IsMeteringAuthority,
                     filter: () => this.isMarketAuthority,
                 },
                 {
-                    name: 'Is Physical Asset Authority Claim',
+                    name: claimTypeToName(claimTypes.IsPhysicalAssetAuthority),
                     value: claimTypes.IsPhysicalAssetAuthority,
                     filter: () => this.isMarketAuthority,
                 },
                 {
-                    name: 'Metering Claim',
+                    name: claimTypeToName(claimTypes.MeteringClaim),
                     value: claimTypes.MeteringClaim,
                     filter: () => this.isMeteringAuthority,
                 },
                 {
-                    name: 'Balance Claim',
+                    name: claimTypeToName(claimTypes.BalanceClaim),
                     value: claimTypes.BalanceClaim,
                     filter: () => this.isBalanceAuthority,
                 },
                 {
-                    name: 'Existence Claim',
+                    name: claimTypeToName(claimTypes.ExistenceClaim),
                     value: claimTypes.ExistenceClaim,
                     filter: () => this.isPhysicalAssetAuthority,
                 },
                 {
-                    name: 'Generation Type Claim',
+                    name: claimTypeToName(claimTypes.GenerationTypeClaim),
                     value: claimTypes.GenerationTypeClaim,
                     filter: () => this.isPhysicalAssetAuthority,
                 },
                 {
-                    name: 'Location Claim',
+                    name: claimTypeToName(claimTypes.LocationClaim),
                     value: claimTypes.LocationClaim,
                     filter: () => this.isPhysicalAssetAuthority,
                 },
                 {
-                    name: 'Accepted Distributor Contracts Claim',
+                    name: claimTypeToName(claimTypes.AcceptedDistributorClaim),
                     value: claimTypes.AcceptedDistributorClaim,
                     filter: () => this.isBalanceAuthority,
+                },
+                {
+                    name: claimTypeToName(claimTypes.RealWorldPlantIdClaim),
+                    value: claimTypes.RealWorldPlantIdClaim,
+                    filter: () => true,
+                },
+                {
+                    name: claimTypeToName(claimTypes.MaxPowerConsumptionClaim),
+                    value: claimTypes.MaxPowerConsumptionClaim,
+                    filter: () => this.isPhysicalAssetAuthority,
+                },
+                {
+                    name: claimTypeToName(claimTypes.MaxPowerGenerationClaim),
+                    value: claimTypes.MaxPowerGenerationClaim,
+                    filter: () => this.isPhysicalAssetAuthority,
                 },
             ],
         }
     },
 
     methods: {
+        claimNeedsRealWorldPlantId(claimType) {
+            return (
+                claimType === claimTypes.RealWorldPlantIdClaim ||
+                claimType === claimTypes.BalanceClaim ||
+                claimType === claimTypes.ExistenceClaim ||
+                claimType === claimTypes.GenerationTypeClaim ||
+                claimType === claimTypes.LocationClaim ||
+                claimType === claimTypes.MeteringClaim ||
+                claimType === claimTypes.MaxPowerGenerationClaim
+            )
+        },
+        claimTypeToName(claimType) {
+            return claimTypeToName(claimType)
+        },
         hexlifyData(data) {
             return this.drizzleInstance.web3.utils.toHex(data)
+        },
+        hexToAscii(hex) {
+            return this.drizzleInstance.web3.utils.hexToAscii(hex)
         },
         getHash(address, topic, data) {
             return this.drizzleInstance.web3.utils.soliditySha3(address, topic, data)
         },
         addClaim() {
             let data = {
-                startDate: this.formData.startDate,
-                expiryDate: +new Date(this.formData.expiryDate),
+                expiryDate: new String(+new Date(this.formData.expiryDate)),
+                startDate: '1',
             }
 
-            if (
-                this.selectedClaimType === 10130 ||
-                this.selectedClaimType === 10050 ||
-                this.selectedClaimType === 10060 ||
-                this.selectedClaimType === 10070 ||
-                this.selectedClaimType === 10080 ||
-                this.selectedClaimType === 10040 ||
-                this.selectedClaimType === 10065
-            ) {
+            if (this.claimNeedsRealWorldPlantId(this.selectedClaimType)) {
                 data.realWorldPlantId = this.formData.realWorldPlantId
             }
 
-            if (this.selectedClaimType === 10060) {
+            if (this.selectedClaimType === claimTypes.ExistenceClaim) {
                 data.type = this.formData.type
             }
 
-            if (this.selectedClaimType === 10065) {
+            if (this.selectedClaimType === claimTypes.MaxPowerGenerationClaim) {
                 data.maxGen = this.formData.maxGen
             }
 
-            if (this.selectedClaimType === 10140) {
+            if (this.selectedClaimType === claimTypes.MaxPowerConsumptionClaim) {
                 data.maxCon = this.formData.maxCon
             }
 
@@ -215,16 +280,11 @@ export default {
             // target Identity Contract as web3 Contract Object
             let targetIdentityContract = getNewContract(IdentityContract, targetAddress)
 
-            if (this.selectedClaimType === 10120) {
+            if (this.selectedClaimType === claimTypes.AcceptedDistributorClaim) {
                 data.address = this.identityContract.idcAddress.toString().slice(2).toLowerCase()
-                data.t = 't'
-                data.realWorldPlantId = 'dsfewfewf'
-                console.log(JSON.stringify(data))
-                targetAddress = this.drizzleInstance.contracts.Distributor.address
-                console.log(targetAddress)
 
+                targetAddress = this.drizzleInstance.contracts.Distributor.address
                 targetIdentityContract = getNewContract(Distributor, targetAddress)
-                console.log(targetIdentityContract)
             }
 
             // takes the users first activeAccount Identity Contract as issuer
@@ -238,12 +298,6 @@ export default {
             console.log(hashToSign)
 
             this.drizzleInstance.web3.eth.sign(hashToSign, this.activeAccount).then((signature) => {
-                console.log(this.selectedClaimType)
-                console.log(1)
-                console.log(issuerAddress)
-                console.log(signature)
-                console.log(hexlifiedData)
-                console.log('')
                 targetIdentityContract.methods
                     .addClaim(this.selectedClaimType, 1, issuerAddress, signature, hexlifiedData, '')
                     .send({ from: this.activeAccount })
