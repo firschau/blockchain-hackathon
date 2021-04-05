@@ -9,7 +9,14 @@
         >
         </v-autocomplete>
 
-        <v-btn @click="isAddClaimDialogOpen = true" :disabled="!identityContract" color="primary"> addClaim </v-btn>
+        <v-btn
+            @click="isAddClaimDialogOpen = true"
+            :disabled="!identityContract"
+            class="white--text"
+            color="darkblueshade"
+        >
+            addClaim
+        </v-btn>
 
         <v-dialog v-model="isAddClaimDialogOpen" width="700">
             <v-card>
@@ -93,7 +100,7 @@
                 <v-card-actions>
                     <v-btn @click="isAddClaimDialogOpen = false">Cancel</v-btn>
                     <v-spacer />
-                    <v-btn @click="addClaim" color="primary"> Add Claim </v-btn>
+                    <v-btn @click="addClaim" class="white--text" color="darkblueshade"> Add Claim </v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>

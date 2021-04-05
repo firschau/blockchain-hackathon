@@ -9,6 +9,9 @@ export default new Vuetify({
             light: {
                 primary: '#009',
                 accent: '#f90',
+                gray: '#909090',
+                white: '#FFFFFF',
+                darkblueshade: '#011F30',
             },
         },
     },
