@@ -1,5 +1,6 @@
 <template>
     <v-app v-if="isDrizzleInitialized" class="app">
+        <div id="bg-image"></div>
         <v-app-bar app color="black" clipped-left dark>
             <v-app-bar-nav-icon @click="isNavDrawerOpen = !isNavDrawerOpen"></v-app-bar-nav-icon>
             <v-app-bar-title>
@@ -101,10 +102,21 @@ export default {
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
 
-#app {
-    font-family: 'Poppins', sans-serif;
+#bg-image {
     background-image: url(assets/background.png);
     background-size: cover;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+#app {
+    font-family: 'Poppins', sans-serif;
 }
 
 #drawer {
