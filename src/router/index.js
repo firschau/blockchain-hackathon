@@ -4,7 +4,7 @@ import Home from '../views/Home.vue'
 import Claims from '../views/Claims.vue'
 import Authorities from '../views/Authorities.vue'
 import IdentityContracts from '../views/IdentityContracts.vue'
-import GenerationPlant from '../views/GenerationPlant.vue'
+import MapTest from '../views/MapTest.vue'
 
 Vue.use(VueRouter)
 
@@ -27,8 +27,8 @@ const routes = [
         component: IdentityContracts,
     },
     {
-        path: '/generationPlant',
-        component: GenerationPlant,
+        path: '/mapTest',
+        component: MapTest,
     },
 ]
 
