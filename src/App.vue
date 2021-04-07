@@ -55,6 +55,8 @@ export default {
             { to: '/claims', text: 'Claims' },
             { to: '/authorities', text: 'Authorities' },
             { to: '/identityContracts', text: 'Identity Contracts' },
+            { to: '/generationPlants', text: 'Generation Plants' },
+            { to: '/newGenerationPlants', text: 'New Generation Plants' },
         ],
     }),
 

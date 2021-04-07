@@ -4,6 +4,9 @@ import Home from '../views/Home.vue'
 import Claims from '../views/Claims.vue'
 import Authorities from '../views/Authorities.vue'
 import IdentityContracts from '../views/IdentityContracts.vue'
+import GenerationPlants from '../views/GenerationPlants.vue'
+import ConsumptionPlants from '../views/ConsumptionPlants.vue'
+import NewGenerationPlants from '../views/NewGenerationPlants.vue'
 
 Vue.use(VueRouter)
 
@@ -24,6 +27,18 @@ const routes = [
     {
         path: '/identityContracts',
         component: IdentityContracts,
+    },
+    {
+        path: '/generationPlants',
+        component: GenerationPlants,
+    },
+    {
+        path: '/consumptionPlants',
+        component: ConsumptionPlants,
+    },
+    {
+        path: '/newGenerationPlants',
+        component: NewGenerationPlants,
     },
 ]
 

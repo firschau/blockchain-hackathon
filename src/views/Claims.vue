@@ -87,6 +87,7 @@
                     </v-row>
                     <v-row v-if="selectedClaimType">
                         <v-col>
+                            <date-picker v-model="formData.expiryDate" label="Expiration Date" />
                             <v-menu
                                 v-model="isDatePickerOpen"
                                 :close-on-content-click="false"
@@ -153,8 +154,14 @@ import { getNewContract } from '../utils/drizzle'
 import IdentityContract from '../contracts/IdentityContract.json'
 import Distributor from '../contracts/Distributor.json'
 
+import DatePicker from '../components/DatePicker'
+
 export default {
     name: 'Claims',
+
+    components: {
+        DatePicker,
+    },
 
     data() {
         return {
@@ -163,7 +170,7 @@ export default {
             selectedClaimType: null,
             isDatePickerOpen: false,
             formData: {
-                expiryDate: new Date(Date.now() + 24 * 60 * 60 * 1000 * 365 * 10).toISOString().substring(0, 10),
+                expiryDate: +Date.now() + 24 * 60 * 60 * 1000 * 365 * 10,
                 startDate: Date.now(),
                 realWorldPlantId: 'bestPlantId',
                 maxGen: 300000000,
@@ -261,8 +268,8 @@ export default {
         },
         addClaim() {
             let data = {
-                expiryDate: new String(+new Date(this.formData.expiryDate)),
-                startDate: '1',
+                expiryDate: this.formData.expiryDate / 1000,
+                startDate: this.formData.startDate / 1000,
             }
 
             if (this.claimNeedsRealWorldPlantId(this.selectedClaimType)) {

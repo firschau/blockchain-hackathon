@@ -9,6 +9,7 @@
         "@openzeppelin/contracts": "^3.4.0",
         "core-js": "^3.6.5",
         "ethereumjs-util": "^7.0.9",
+        "json-server": "^0.16.3",
         "prettier": "^2.2.1",
         "remixd": "^0.2.0-alpha.5",
         "solc": "^0.7.6",
@@ -49,7 +50,8 @@
         "tests": "gulp tests",
         "serve": "vue-cli-service serve",
         "build-frontend": "vue-cli-service build",
-        "lint": "vue-cli-service lint"
+        "lint": "vue-cli-service lint",
+        "mock-server": "json-server --watch db.json"
     },
     "gitHooks": {
         "pre-commit": "lint-staged"
