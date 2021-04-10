@@ -48,12 +48,12 @@
                 </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="MaxPowerGenerationClaim === 'claimed'" color="success" large
+                        <v-icon v-if="MaxPowerConsumptionClaim === 'claimed'" color="success" large
                             >mdi-check-circle</v-icon
                         >
                         <v-btn
                             @click="addMaxPowerGenerationClaim"
-                            v-if="MaxPowerGenerationClaim === 'approved'"
+                            v-if="MaxPowerConsumptionClaim === 'approved'"
                             color="primary"
                             >Claim</v-btn
                         >
@@ -128,8 +128,9 @@ export default {
             realWorldPlantId:
                 this.chainData[claimTypes.RealWorldPlantIdClaim]?.__data?.realWorldPlantId ||
                 this.apiData?.realWorldPlantId,
+            //added consumption to claimTypes.Generaion
             plantType: this.chainData[claimTypes.GenerationTypeClaim]?.__data?.plantType || this.apiData?.plantType,
-            maxGen: this.chainData[claimTypes.MaxPowerGenerationClaim]?.__data?.maxGen || this.apiData?.maxGen,
+            maxCon: this.chainData[claimTypes.MaxPowerConsumptionClaim]?.__data?.maxCon || this.apiData?.maxCon,
             lat: this.chainData[claimTypes.LocationClaim]?.__data?.lat || this.apiData?.lat,
             long: this.chainData[claimTypes.LocationClaim]?.__data?.long || this.apiData?.long,
             expiryDate: new Date(

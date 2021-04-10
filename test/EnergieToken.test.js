@@ -186,14 +186,15 @@ contract('EnergyToken', function (accounts) {
         // Give claims to IDC 2.
         //RealWorldPlantIdClaim
         await addClaim(idcs[2], 10130, idcs[2].options.address, data, '', account7Sk)
-        //MeteringClaim
-        await addClaim(idcs[2], 10040, meteringAuthority.options.address, data, '', account8Sk)
         //BalanceClaim
         await addClaim(idcs[2], 10050, balanceAuthority.options.address, data, '', account8Sk)
         //ExistenceClaim
         await addClaim(idcs[2], 10060, physicalAssetAuthority.options.address, dataExistenceGeneration, '', account8Sk)
+        //MeteringClaim
+        await addClaim(idcs[2], 10040, meteringAuthority.options.address, data, '', account8Sk)
         //MaxPowerGenerationClaim
         await addClaim(idcs[2], 10065, physicalAssetAuthority.options.address, dataMaxGen, '', account8Sk)
+        //MaxPowerConsumptionClaim
         await addClaim(idcs[2], 10140, physicalAssetAuthority.options.address, dataMaxCon, '', account8Sk)
 
         // Get token ID.

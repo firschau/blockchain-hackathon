@@ -56,14 +56,9 @@ export default {
             realWorldPlantId: 'bestPlantId',
             imgURL: '',
             plantType: '',
-            plantTypes: [
-                'Photovoltaic',
-                'HydroelectricPowerPlant',
-                'WindTurbine',
-                'NuclearPowerPlant',
-                'Coal-FiredPowerPlant',
-            ],
-            maxGen: 300000000,
+            plantTypes: ['Factory', 'Residential building', 'Infrastructure provider', 'Energy community'],
+            // new for Consumption
+            maxCon: 300000000,
             lat: 0,
             long: 0,
             expiryDate: Date.now() + 24 * 60 * 60 * 1000 * 365 * 10,
@@ -75,7 +70,7 @@ export default {
         this.$drizzleEvents.$on('drizzle/contractEvent', (payload) => {
             // if identity contract was created try to add a generation Plant with it's address
             if (payload.eventName === 'IdentityContractCreation') {
-                this.addGenerationPlant(payload.data.idcAddress)
+                this.addConsumptionPlant(payload.data.idcAddress)
             }
         })
     },
@@ -86,7 +81,9 @@ export default {
                 .createIdentityContract()
                 .send({ from: this.activeAccount })
         },
-        async addGenerationPlant(idcAddress) {
+
+        // TODO : still not fully worked thoght for ConsumptionPlants
+        async addConsumptionPlant(idcAddress) {
             const identityContract = getNewContract(IdentityContract, idcAddress)
 
             const owner = await identityContract.methods.owner().call()
@@ -130,7 +127,7 @@ export default {
                                     realWorldPlantId: this.realWorldPlantId,
                                     imgURL: this.imgURL,
                                     plantType: this.plantType,
-                                    maxGen: this.maxGen,
+                                    maxCon: this.maxCon,
                                     lat: this.lat,
                                     long: this.long,
                                     expiryDate: this.expiryDate / 1000,
@@ -141,7 +138,8 @@ export default {
                                         ExistenceClaim: null,
                                         GenerationTypeClaim: null,
                                         LocationClaim: null,
-                                        MaxPowerGenerationClaim: null,
+                                        //changed to Consumption
+                                        MaxPowerConsumptionClaim: null,
                                     },
                                 }),
                             })

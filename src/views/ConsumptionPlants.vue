@@ -4,7 +4,7 @@
             <v-card-title>
                 Consumption Plants
                 <v-spacer></v-spacer>
-                <v-btn @click="isNewGenerationPlantDialogOpen = true" color="darkyellow">New Consumption Plant</v-btn>
+                <v-btn @click="isNewConsumptionPlantDialogOpen = true" color="darkyellow">New Consumption Plant</v-btn>
             </v-card-title>
             <v-card-text class="pt-4">
                 <v-img
@@ -28,10 +28,10 @@
             </v-card-text>
         </v-card>
 
-        <v-dialog v-model="isNewGenerationPlantDialogOpen" width="700">
+        <v-dialog v-model="isNewConsumptionPlantDialogOpen" width="700">
             <new-generation-plant-dialog
-                v-if="isNewGenerationPlantDialogOpen"
-                @close="isNewGenerationPlantDialogOpen = false"
+                v-if="isNewConsumptionPlantDialogOpen"
+                @close="isNewConsumptionPlantDialogOpen = false"
             />
         </v-dialog>
     </v-container>
@@ -39,21 +39,21 @@
 
 <script>
 import { mapGetters } from 'vuex'
-// import NewConsumptionPlantDialog from '../components/NewConsumptionPlantDialog.vue'
-// import ConsumptionPlantCard from '../components/ConsumptionPlantCard.vue'
+//import NewConsumptionPlantDialog from '../components/NewConsumptionPlantDialog.vue'
+//import ConsumptionPlantCard from '../components/ConsumptionPlantCard.vue'
 import { claimTypes } from '../utils/claims'
 
 export default {
     name: 'ConsumptionPlantsView',
 
-    // components: {
-    //     NewConsumptionPlantDialog,
-    //     ConsumptionPlantCard,
-    // },
+    components: {
+        //NewConsumptionPlantDialog,
+        //ConsumptionPlantCard,
+    },
 
     data() {
         return {
-            isNewGenerationPlantDialogOpen: false,
+            isNewConsumptionPlantDialogOpen: false,
             generationPlantsApiData: {},
             claimTypes,
             apiDataLoaded: false,
@@ -69,8 +69,9 @@ export default {
             .then((response) => response.json())
             .then((data) => {
                 const activeUsersGenerationPlants = data.filter((data) => data.owner === this.activeAccount)
-                console.log(activeUsersGenerationPlants)
+                console.log(activeUsersGenerationPlants + ' ConsumptionPlants line 72 ')
                 activeUsersGenerationPlants.forEach((plant) => {
+                    //was macht hier $Set in GernationPlants.uve wo wird das dran gehängt ?
                     this.$set(this.generationPlantsApiData, plant.idcAddress, plant)
                 })
                 this.apiDataLoaded = true
