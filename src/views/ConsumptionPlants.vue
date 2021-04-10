@@ -19,7 +19,7 @@
                         v-for="generationPlant in generationPlantsChainData"
                         :key="generationPlant.idcAddress"
                     >
-                        <generation-plant-card
+                        <consumption-plant-card
                             :chain-data="generationPlant"
                             :api-data="generationPlantsApiData[generationPlant.address]"
                         />
@@ -29,7 +29,7 @@
         </v-card>
 
         <v-dialog v-model="isNewConsumptionPlantDialogOpen" width="700">
-            <new-generation-plant-dialog
+            <new-consumption-plant-dialog
                 v-if="isNewConsumptionPlantDialogOpen"
                 @close="isNewConsumptionPlantDialogOpen = false"
             />
@@ -39,16 +39,16 @@
 
 <script>
 import { mapGetters } from 'vuex'
-//import NewConsumptionPlantDialog from '../components/NewConsumptionPlantDialog.vue'
-//import ConsumptionPlantCard from '../components/ConsumptionPlantCard.vue'
+import NewConsumptionPlantDialog from '../components/NewConsumptionPlantDialog.vue'
+import ConsumptionPlantCard from '../components/ConsumptionPlantCard.vue'
 import { claimTypes } from '../utils/claims'
 
 export default {
     name: 'ConsumptionPlantsView',
 
     components: {
-        //NewConsumptionPlantDialog,
-        //ConsumptionPlantCard,
+        NewConsumptionPlantDialog,
+        ConsumptionPlantCard,
     },
 
     data() {

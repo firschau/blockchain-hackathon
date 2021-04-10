@@ -14,7 +14,7 @@
                         <v-select label="Plant Type" v-model="plantType" :items="plantTypes"></v-select>
                     </v-col>
                     <v-col cols="6">
-                        <v-text-field label="Maximum Generation Capacity" v-model="maxGen" type="number"></v-text-field>
+                        <v-text-field label="Maximum Energy Consumption" v-model="maxGen" type="number"></v-text-field>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field label="Latitude" v-model="lat" type="number"></v-text-field>
@@ -31,7 +31,7 @@
         <v-card-actions>
             <v-btn @click="$emit('close')">Cancel</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="createNewIdentityContract">Add Generation Plant</v-btn>
+            <v-btn color="primary" @click="createNewIdentityContract">Add Consumption Plant</v-btn>
         </v-card-actions>
     </v-card>
 </template>
