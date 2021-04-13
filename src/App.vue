@@ -25,7 +25,7 @@
             </v-list>
             <v-divider />
             <v-list>
-                <v-list-item v-for="navItem in navItems" :key="navItem.text" :to="navItem.to">{{
+                <v-list-item v-for="navItem in filteredNavItems" :key="navItem.text" :to="navItem.to">{{
                     navItem.text
                 }}</v-list-item>
             </v-list>
@@ -41,25 +41,36 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
     name: 'App',
 
-    data: () => ({
-        isSnackbarVisible: false,
-        snackbarText: '',
-        isNavDrawerOpen: true,
-        navItems: [
-            { to: '/', text: 'Home' },
-            { to: '/claims', text: 'Claims' },
-            { to: '/authorities', text: 'Authorities' },
-            { to: '/identityContracts', text: 'Identity Contracts' },
-            { to: '/generationPlants', text: 'Generation Plants' },
-            { to: '/consumptionPlants', text: 'Consumtion Plants' },
-            { to: '/newGenerationPlants', text: 'New Generation Plants' },
-        ],
-    }),
+    data() {
+        return {
+            isSnackbarVisible: false,
+            snackbarText: '',
+            isNavDrawerOpen: true,
+            navItems: [
+                { to: '/', text: 'Home', filter: () => true },
+                { to: '/claims', text: 'Claims', filter: () => true },
+                { to: '/authorities', text: 'Authorities', filter: () => true },
+                { to: '/identityContracts', text: 'Identity Contracts', filter: () => true },
+                { to: '/generationPlants', text: 'My Generation Plants', filter: () => true },
+                { to: '/consumptionPlants', text: 'My Consumtion Plants', filter: () => true },
+                {
+                    to: '/newGenerationPlants',
+                    text: 'New Generation Plants',
+                    filter: () => this.isBalanceAuthority || this.isMeteringAuthority || this.isPhysicalAssetAuthority,
+                },
+                {
+                    to: '/newConsumptionPlants',
+                    text: 'New Consumption Plants',
+                    filter: () => this.isBalanceAuthority || this.isMeteringAuthority || this.isPhysicalAssetAuthority,
+                },
+            ],
+        }
+    },
 
     mounted() {
         this.$drizzleEvents.$on('drizzle/contractEvent', (payload) => {
@@ -75,11 +86,15 @@ export default {
     watch: {
         // initialize active account store when the active account changes
         activeAccount() {
-            if (this.isDrizzleInitialized) this.$store.dispatch('currentUser/initActiveAccount')
+            if (this.isDrizzleInitialized) {
+                if (this.$route.fullPath !== '/') this.$router.push('/')
+                this.$store.dispatch('currentUser/initActiveAccount')
+            }
         },
     },
 
     computed: {
+        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
         ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
         ...mapGetters('accounts', ['activeAccount']),
         appTitle() {
@@ -97,6 +112,9 @@ export default {
                 title += 'Physical Asset Authority '
             }
             return title
+        },
+        filteredNavItems() {
+            return this.navItems.filter((navItem) => navItem.filter())
         },
     },
 }
@@ -124,8 +142,5 @@ export default {
 
 #drawer {
     background-color: lightgray;
-}
-
-.enbwLogo {
 }
 </style>
