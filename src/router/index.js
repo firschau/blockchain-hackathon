@@ -7,6 +7,7 @@ import IdentityContracts from '../views/IdentityContracts.vue'
 import GenerationPlants from '../views/GenerationPlants.vue'
 import ConsumptionPlants from '../views/ConsumptionPlants.vue'
 import NewGenerationPlants from '../views/NewGenerationPlants.vue'
+import NewConsumptionPlants from '../views/NewConsumptionPlants.vue'
 
 Vue.use(VueRouter)
 
@@ -39,6 +40,10 @@ const routes = [
     {
         path: '/newGenerationPlants',
         component: NewGenerationPlants,
+    },
+    {
+        path: '/newConsumptionPlants',
+        component: NewConsumptionPlants,
     },
 ]
 
