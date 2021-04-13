@@ -1,3 +1,5 @@
+import store from '../store'
+
 export const claimTypes = {
     IsBalanceAuthority: 10010,
     IsMeteringAuthority: 10020,
@@ -50,5 +52,12 @@ export function claimTypeToName(claimType) {
             return 'Max Power Consumption Claim'
         default:
             return 'Unknown'
+    }
+}
+
+export function serializeClaim(claim) {
+    return {
+        ...claim,
+        __data: JSON.parse(store.getters['drizzle/drizzleInstance'].web3.utils.hexToAscii(claim.__data)),
     }
 }
