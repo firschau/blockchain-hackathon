@@ -75,16 +75,16 @@ module.exports = async function (callback) {
                 .send({ from: accounts[0], gas: 7000000 })
         }
     }
-    for (let i = 0; i < 3; i++) {
-        try {
-            let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 3] })
-            let idcAddress = idcDeployment.logs[0].args.idcAddress
-            idcs[i] = new web3.eth.Contract(abi, idcAddress)
-            console.log(`Successfully deployed IdentityContract ${i} with address: ${idcs[i].options.address}`)
-        } catch (e) {
-            console.log(e)
-        }
-    }
+    // for (let i = 0; i < 3; i++) {
+    //     try {
+    //         let idcDeployment = await identityContractFactory.createIdentityContract({ from: accounts[i + 3] })
+    //         let idcAddress = idcDeployment.logs[0].args.idcAddress
+    //         idcs[i] = new web3.eth.Contract(abi, idcAddress)
+    //         console.log(`Successfully deployed IdentityContract ${i} with address: ${idcs[i].options.address}`)
+    //     } catch (e) {
+    //         console.log(e)
+    //     }
+    // }
 
     energyToken = await EnergyToken.deployed()
     energyTokenWeb3 = new web3.eth.Contract(EnergyToken.abi, energyToken.address)
