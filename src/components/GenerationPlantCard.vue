@@ -99,24 +99,33 @@
                 </v-col>
             </v-row>
         </v-card-text>
+        <v-overlay absolute :value="!chainDataLoaded"
+            ><v-progress-circular indeterminate size="64"></v-progress-circular
+        ></v-overlay>
     </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { claimTypes } from '../utils/claims'
+import { claimTypes, serializeClaim } from '../utils/claims'
 import { getNewContract } from '../utils/drizzle'
 import IdentityContract from '../contracts/IdentityContract.json'
+
+const claimsOfGenerationPlants = [
+    claimTypes.RealWorldPlantIdClaim,
+    claimTypes.ExistenceClaim,
+    claimTypes.MeteringClaim,
+    claimTypes.BalanceClaim,
+    claimTypes.LocationClaim,
+    claimTypes.GenerationTypeClaim,
+    claimTypes.MaxPowerGenerationClaim,
+]
 
 export default {
     name: 'GenerationPlantCard',
 
     props: {
-        chainData: {
-            type: Object,
-            required: true,
-        },
-        apiData: {
+        generationPlant: {
             type: Object,
             required: false,
         },
@@ -124,80 +133,84 @@ export default {
 
     data() {
         return {
-            claimTypes,
-            realWorldPlantId:
-                this.chainData[claimTypes.RealWorldPlantIdClaim]?.__data?.realWorldPlantId ||
-                this.apiData?.realWorldPlantId,
-            plantType: this.chainData[claimTypes.GenerationTypeClaim]?.__data?.plantType || this.apiData?.plantType,
-            maxGen: this.chainData[claimTypes.MaxPowerGenerationClaim]?.__data?.maxGen || this.apiData?.maxGen,
-            lat: this.chainData[claimTypes.LocationClaim]?.__data?.lat || this.apiData?.lat,
-            long: this.chainData[claimTypes.LocationClaim]?.__data?.long || this.apiData?.long,
-            expiryDate: new Date(
-                this.chainData[claimTypes.RealWorldPlantIdClaim].__data.expiryDate * 1000
-            ).toLocaleDateString(),
-            MeteringClaim: this.getStatus('MeteringClaim'),
-            BalanceClaim: this.getStatus('BalanceClaim'),
-            MaxPowerGenerationClaim: this.getStatus('MaxPowerGenerationClaim'),
-            ExistenceClaim: this.getStatus('ExistenceClaim'),
-            GenerationTypeClaim: this.getStatus('GenerationTypeClaim'),
-            LocationClaim: this.getStatus('LocationClaim'),
+            chainData: {},
+            chainDataLoaded: false,
         }
     },
 
+    created() {
+        this.loadChainData()
+    },
+
     methods: {
+        loadChainData() {
+            this.chainDataLoaded = false
+            const identityContract = getNewContract(IdentityContract, this.generationPlant.idcAddress)
+
+            claimsOfGenerationPlants.forEach(async (claimType) => {
+                const claimIds = await identityContract.methods.getClaimIdsByTopic(claimType).call()
+                claimIds.forEach(async (claimId) => {
+                    const claim = await identityContract.methods.getClaim(claimId).call().then(serializeClaim)
+
+                    this.$set(this.chainData, claimType, claim)
+                })
+                if (claimsOfGenerationPlants.indexOf(claimType) === claimsOfGenerationPlants.length - 1)
+                    this.chainDataLoaded = true
+            })
+        },
         getStatus(claimType) {
             if (this.chainData[claimTypes[claimType]]) return 'claimed'
-            if (this.apiData?.signatures[claimType]) return 'approved'
+            if (this.generationPlant?.signatures[claimType]) return 'approved'
             else return 'waiting'
         },
         addExistenceClaim() {
             const data = {
                 type: 'generation',
-                imgURL: this.apiData.imgURL,
+                imgURL: this.generationPlant.imgURL,
             }
 
             this.addClaim(
                 claimTypes.ExistenceClaim,
                 data,
-                this.apiData.signatures['ExistenceClaim'].signature,
-                this.apiData.signatures['ExistenceClaim'].issuer
+                this.generationPlant.signatures['ExistenceClaim'].signature,
+                this.generationPlant.signatures['ExistenceClaim'].issuer
             )
         },
         addGenerationTypeClaim() {
             const data = {
-                plantType: this.apiData.plantType,
+                plantType: this.generationPlant.plantType,
             }
 
             this.addClaim(
                 claimTypes.GenerationTypeClaim,
                 data,
-                this.apiData.signatures['GenerationTypeClaim'].signature,
-                this.apiData.signatures['GenerationTypeClaim'].issuer
+                this.generationPlant.signatures['GenerationTypeClaim'].signature,
+                this.generationPlant.signatures['GenerationTypeClaim'].issuer
             )
         },
         addMaxPowerGenerationClaim() {
             const data = {
-                maxGen: this.apiData.maxGen,
+                maxGen: this.generationPlant.maxGen,
             }
 
             this.addClaim(
                 claimTypes.MaxPowerGenerationClaim,
                 data,
-                this.apiData.signatures['MaxPowerGenerationClaim'].signature,
-                this.apiData.signatures['MaxPowerGenerationClaim'].issuer
+                this.generationPlant.signatures['MaxPowerGenerationClaim'].signature,
+                this.generationPlant.signatures['MaxPowerGenerationClaim'].issuer
             )
         },
         addLocationClaim() {
             const data = {
-                lat: this.apiData.lat,
-                long: this.apiData.long,
+                lat: this.generationPlant.lat,
+                long: this.generationPlant.long,
             }
 
             this.addClaim(
                 claimTypes.LocationClaim,
                 data,
-                this.apiData.signatures['LocationClaim'].signature,
-                this.apiData.signatures['LocationClaim'].issuer
+                this.generationPlant.signatures['LocationClaim'].signature,
+                this.generationPlant.signatures['LocationClaim'].issuer
             )
         },
         addMeteringClaim() {
@@ -206,8 +219,8 @@ export default {
             this.addClaim(
                 claimTypes.MeteringClaim,
                 data,
-                this.apiData.signatures['MeteringClaim'].signature,
-                this.apiData.signatures['MeteringClaim'].issuer
+                this.generationPlant.signatures['MeteringClaim'].signature,
+                this.generationPlant.signatures['MeteringClaim'].issuer
             )
         },
         addBalanceClaim() {
@@ -216,31 +229,25 @@ export default {
             this.addClaim(
                 claimTypes.BalanceClaim,
                 data,
-                this.apiData.signatures['BalanceClaim'].signature,
-                this.apiData.signatures['BalanceClaim'].issuer
+                this.generationPlant.signatures['BalanceClaim'].signature,
+                this.generationPlant.signatures['BalanceClaim'].issuer
             )
         },
         addClaim(claimType, data, signature, issuer) {
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex({
                 ...data,
-                expiryDate: this.apiData.expiryDate,
-                startDate: this.apiData.startDate,
-                realWorldPlantId: this.apiData.realWorldPlantId,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
             })
 
-            const identityContract = getNewContract(IdentityContract, this.chainData.address)
-
-            console.log(claimType)
-            console.log(1)
-            console.log(issuer)
-            console.log(signature)
-            console.log(hexlifiedData)
+            const identityContract = getNewContract(IdentityContract, this.generationPlant.idcAddress)
 
             identityContract.methods
                 .addClaim(claimType, 1, issuer, signature, hexlifiedData, '')
                 .send({ from: this.activeAccount })
                 .then(() => {
-                    location.reload()
+                    this.loadChainData()
                 })
         },
     },
@@ -248,6 +255,48 @@ export default {
     computed: {
         ...mapGetters('drizzle', ['drizzleInstance']),
         ...mapGetters('accounts', ['activeAccount']),
+        realWorldPlantId() {
+            return (
+                this.chainData[claimTypes.RealWorldPlantIdClaim]?.__data?.realWorldPlantId ||
+                this.generationPlant?.realWorldPlantId
+            )
+        },
+        plantType() {
+            return this.chainData[claimTypes.GenerationTypeClaim]?.__data?.plantType || this.generationPlant?.plantType
+        },
+        maxGen() {
+            return this.chainData[claimTypes.MaxPowerGenerationClaim]?.__data?.maxGen || this.generationPlant?.maxGen
+        },
+        lat() {
+            return this.chainData[claimTypes.LocationClaim]?.__data?.lat || this.generationPlant?.lat
+        },
+        long() {
+            return this.chainData[claimTypes.LocationClaim]?.__data?.long || this.generationPlant?.long
+        },
+        expiryDate() {
+            return new Date(
+                this.chainData[claimTypes.RealWorldPlantIdClaim]?.__data.expiryDate * 1000 ||
+                    this.generationPlant.expiryDate * 1000
+            ).toLocaleDateString()
+        },
+        MeteringClaim() {
+            return this.getStatus('MeteringClaim')
+        },
+        BalanceClaim() {
+            return this.getStatus('BalanceClaim')
+        },
+        MaxPowerGenerationClaim() {
+            return this.getStatus('MaxPowerGenerationClaim')
+        },
+        ExistenceClaim() {
+            return this.getStatus('ExistenceClaim')
+        },
+        GenerationTypeClaim() {
+            return this.getStatus('GenerationTypeClaim')
+        },
+        LocationClaim() {
+            return this.getStatus('LocationClaim')
+        },
     },
 }
 </script>

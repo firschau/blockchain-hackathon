@@ -53,6 +53,7 @@ export default {
 
     data() {
         return {
+            identityContractCreationEventSubscription: null,
             realWorldPlantId: 'bestPlantId',
             imgURL: '',
             plantType: '',
@@ -72,12 +73,16 @@ export default {
     },
 
     mounted() {
-        this.$drizzleEvents.$on('drizzle/contractEvent', (payload) => {
-            // if identity contract was created try to add a generation Plant with it's address
-            if (payload.eventName === 'IdentityContractCreation') {
-                this.addGenerationPlant(payload.data.idcAddress)
+        this.identityContractCreationEventSubscription = this.drizzleInstance.contracts.IdentityContractFactory.events.IdentityContractCreation(
+            {},
+            (error, payload) => {
+                this.addGenerationPlant(payload.returnValues.idcAddress)
             }
-        })
+        )
+    },
+
+    beforeDestroy() {
+        this.identityContractCreationEventSubscription.unsubscribe()
     },
 
     methods: {
@@ -85,6 +90,7 @@ export default {
             this.drizzleInstance.contracts.IdentityContractFactory.methods
                 .createIdentityContract()
                 .send({ from: this.activeAccount })
+                .then((data) => console.log(data))
         },
         async addGenerationPlant(idcAddress) {
             const identityContract = getNewContract(IdentityContract, idcAddress)
@@ -119,31 +125,36 @@ export default {
                         )
                         .send({ from: this.activeAccount })
                         .then(() => {
+                            const generationPlant = {
+                                owner: this.activeAccount,
+                                idcAddress: identityContract.options.address,
+                                realWorldPlantId: this.realWorldPlantId,
+                                imgURL: this.imgURL,
+                                plantType: this.plantType,
+                                maxGen: this.maxGen,
+                                lat: this.lat,
+                                long: this.long,
+                                expiryDate: this.expiryDate / 1000,
+                                startDate: this.startDate / 1000,
+                                signatures: {
+                                    MeteringClaim: null,
+                                    BalanceClaim: null,
+                                    ExistenceClaim: null,
+                                    GenerationTypeClaim: null,
+                                    LocationClaim: null,
+                                    MaxPowerGenerationClaim: null,
+                                },
+                            }
+
                             fetch('/api/generationPlants', {
                                 method: 'post',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify({
-                                    owner: this.activeAccount,
-                                    idcAddress: identityContract.options.address,
-                                    realWorldPlantId: this.realWorldPlantId,
-                                    imgURL: this.imgURL,
-                                    plantType: this.plantType,
-                                    maxGen: this.maxGen,
-                                    lat: this.lat,
-                                    long: this.long,
-                                    expiryDate: this.expiryDate / 1000,
-                                    startDate: this.startDate / 1000,
-                                    signatures: {
-                                        MeteringClaim: null,
-                                        BalanceClaim: null,
-                                        ExistenceClaim: null,
-                                        GenerationTypeClaim: null,
-                                        LocationClaim: null,
-                                        MaxPowerGenerationClaim: null,
-                                    },
-                                }),
+                                body: JSON.stringify(generationPlant),
+                            }).then(() => {
+                                this.$emit('generation-plant-added', generationPlant)
+                                this.$emit('close')
                             })
                         })
                 })

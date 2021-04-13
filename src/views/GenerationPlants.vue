@@ -8,21 +8,14 @@
             </v-card-title>
             <v-card-text class="pt-4">
                 <v-img
-                    v-if="generationPlantsChainData.length === 0"
+                    v-if="Object.keys(generationPlants).length === 0"
                     src="../assets/undraw_wind_turbine.svg"
                     class="mx-auto"
                     width="50%"
                 ></v-img>
-                <v-row v-if="apiDataLoaded">
-                    <v-col
-                        cols="3"
-                        v-for="generationPlant in generationPlantsChainData"
-                        :key="generationPlant.idcAddress"
-                    >
-                        <generation-plant-card
-                            :chain-data="generationPlant"
-                            :api-data="generationPlantsApiData[generationPlant.address]"
-                        />
+                <v-row>
+                    <v-col cols="3" v-for="generationPlant in generationPlants" :key="generationPlant.idcAddress">
+                        <generation-plant-card :generation-plant="generationPlant" />
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -31,6 +24,7 @@
         <v-dialog v-model="isNewGenerationPlantDialogOpen" width="700">
             <new-generation-plant-dialog
                 v-if="isNewGenerationPlantDialogOpen"
+                @generation-plant-added="addGenerationPlant"
                 @close="isNewGenerationPlantDialogOpen = false"
             />
         </v-dialog>
@@ -41,7 +35,6 @@
 import { mapGetters } from 'vuex'
 import NewGenerationPlantDialog from '../components/NewGenerationPlantDialog.vue'
 import GenerationPlantCard from '../components/GenerationPlantCard.vue'
-import { claimTypes } from '../utils/claims'
 
 export default {
     name: 'GenerationPlantsView',
@@ -54,72 +47,36 @@ export default {
     data() {
         return {
             isNewGenerationPlantDialogOpen: false,
-            generationPlantsApiData: {},
-            claimTypes,
-            apiDataLoaded: false,
+            generationPlants: {},
         }
     },
 
     created() {
-        fetch('/api/generationPlants', {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                const activeUsersGenerationPlants = data.filter((data) => data.owner === this.activeAccount)
-                console.log(activeUsersGenerationPlants)
-                activeUsersGenerationPlants.forEach((plant) => {
-                    this.$set(this.generationPlantsApiData, plant.idcAddress, plant)
-                })
-                this.apiDataLoaded = true
-            })
+        this.loadGenerationPlants()
     },
 
     methods: {
-        serializeClaim(claim) {
-            return {
-                ...claim,
-                __data: JSON.parse(this.drizzleInstance.web3.utils.hexToAscii(claim.__data)),
-            }
+        loadGenerationPlants() {
+            fetch('/api/generationPlants', {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const activeUsersGenerationPlants = data.filter((data) => data.owner === this.activeAccount)
+                    activeUsersGenerationPlants.forEach((plant) => {
+                        this.$set(this.generationPlants, plant.idcAddress, plant)
+                    })
+                })
+        },
+        addGenerationPlant(generationPlant) {
+            this.$set(this.generationPlants, generationPlant.idcAddress, generationPlant)
         },
     },
 
     computed: {
         ...mapGetters('accounts', ['activeAccount']),
-        ...mapGetters('drizzle', ['drizzleInstance']),
-        ...mapGetters('identityContracts', ['activeAccountIdentityContracts']),
-        generationPlantsChainData() {
-            return this.activeAccountIdentityContracts
-                .filter((idc) =>
-                    idc.claims.some((claim) => claim.__topic === claimTypes.RealWorldPlantIdClaim.toString())
-                )
-                .map((idc) => ({
-                    address: idc.idcAddress,
-                    [claimTypes.RealWorldPlantIdClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.RealWorldPlantIdClaim.toString()),
-                    [claimTypes.BalanceClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.BalanceClaim.toString()),
-                    [claimTypes.MeteringClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.MeteringClaim.toString()),
-                    [claimTypes.ExistenceClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.ExistenceClaim.toString()),
-                    [claimTypes.GenerationTypeClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.GenerationTypeClaim.toString()),
-                    [claimTypes.LocationClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.LocationClaim.toString()),
-                    [claimTypes.MaxPowerGenerationClaim]: idc.claims
-                        .map(this.serializeClaim)
-                        .find((claim) => claim.__topic === claimTypes.MaxPowerGenerationClaim.toString()),
-                }))
-        },
     },
 }
 </script>
