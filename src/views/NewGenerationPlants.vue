@@ -41,12 +41,7 @@ export default {
     },
 
     computed: {
-        ...mapState('currentUser', [
-            'isBalanceAuthority',
-            'isMarketAuthority',
-            'isMeteringAuthority',
-            'isPhysicalAssetAuthority',
-        ]),
+        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
         filteredGenerationPlants() {
             return this.generationPlants.filter(
                 (plant) =>

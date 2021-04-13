@@ -315,12 +315,7 @@ export default {
     },
 
     computed: {
-        ...mapState('currentUser', [
-            'isBalanceAuthority',
-            'isMarketAuthority',
-            'isMeteringAuthority',
-            'isPhysicalAssetAuthority',
-        ]),
+        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
         ...mapGetters('accounts', ['activeAccount']),
         ...mapGetters('drizzle', ['drizzleInstance']),
         ...mapGetters('identityContracts', ['activeAccountIdentityContracts']),
