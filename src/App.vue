@@ -1,5 +1,5 @@
 <template>
-    <v-app v-if="isDrizzleInitialized" class="app">
+    <v-app v-if="isDrizzleInitialized">
         <div id="bg-image"></div>
         <v-app-bar app color="black" clipped-left dark>
             <v-app-bar-nav-icon @click="isNavDrawerOpen = !isNavDrawerOpen"></v-app-bar-nav-icon>
@@ -8,7 +8,7 @@
             </v-app-bar-title>
         </v-app-bar>
 
-        <v-navigation-drawer v-model="isNavDrawerOpen" clipped app class="drawer">
+        <v-navigation-drawer v-model="isNavDrawerOpen" clipped app>
             <v-list>
                 <v-list-item>
                     <v-list-item-content>
@@ -25,9 +25,14 @@
             </v-list>
             <v-divider />
             <v-list>
-                <v-list-item v-for="navItem in filteredNavItems" :key="navItem.text" :to="navItem.to">{{
-                    navItem.text
-                }}</v-list-item>
+                <v-list-item v-for="navItem in navItems" :key="navItem.text" :to="navItem.to">
+                    {{ navItem.text }}
+                </v-list-item>
+                <v-divider v-if="isAdmin"></v-divider>
+                <v-subheader v-if="isAdmin"> Admin </v-subheader>
+                <v-list-item v-for="navItem in filteredAdminNavItems" :key="navItem.text" :to="navItem.to">
+                    {{ navItem.text }}
+                </v-list-item>
             </v-list>
         </v-navigation-drawer>
 
@@ -52,20 +57,22 @@ export default {
             snackbarText: '',
             isNavDrawerOpen: true,
             navItems: [
-                { to: '/', text: 'Home', filter: () => true },
-                { to: '/claims', text: 'Claims', filter: () => true },
-                { to: '/authorities', text: 'Authorities', filter: () => true },
-                { to: '/identityContracts', text: 'Identity Contracts', filter: () => true },
-                { to: '/generationPlants', text: 'My Generation Plants', filter: () => true },
-                { to: '/consumptionPlants', text: 'My Consumtion Plants', filter: () => true },
+                { to: '/', text: 'Home' },
+                { to: '/authorities', text: 'Market' },
+                { to: '/identityContracts', text: 'Identity Contracts' },
+                { to: '/generationPlants', text: 'Generation Plants' },
+                { to: '/consumptionPlants', text: 'Consumtion Plants' },
+            ],
+            adminNavItems: [
+                { to: '/claims', text: 'Add Authority', filter: () => this.isMarketAuthority },
                 {
-                    to: '/newGenerationPlants',
-                    text: 'New Generation Plants',
+                    to: '/signGenerationPlants',
+                    text: 'Sign Generation Plants',
                     filter: () => this.isBalanceAuthority || this.isMeteringAuthority || this.isPhysicalAssetAuthority,
                 },
                 {
-                    to: '/newConsumptionPlants',
-                    text: 'New Consumption Plants',
+                    to: '/signConsumptionPlants',
+                    text: 'Sign Consumption Plants',
                     filter: () => this.isBalanceAuthority || this.isMeteringAuthority || this.isPhysicalAssetAuthority,
                 },
             ],
@@ -87,14 +94,18 @@ export default {
         // initialize active account store when the active account changes
         activeAccount() {
             if (this.isDrizzleInitialized) {
-                if (this.$route.fullPath !== '/') this.$router.push('/')
                 this.$store.dispatch('currentUser/initActiveAccount')
             }
         },
     },
 
     computed: {
-        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
+        ...mapState('currentUser', [
+            'isBalanceAuthority',
+            'isMeteringAuthority',
+            'isPhysicalAssetAuthority',
+            'isMarketAuthority',
+        ]),
         ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
         ...mapGetters('accounts', ['activeAccount']),
         appTitle() {
@@ -113,8 +124,16 @@ export default {
             }
             return title
         },
-        filteredNavItems() {
-            return this.navItems.filter((navItem) => navItem.filter())
+        filteredAdminNavItems() {
+            return this.adminNavItems.filter((navItem) => navItem.filter())
+        },
+        isAdmin() {
+            return (
+                this.isBalanceAuthority ||
+                this.isMeteringAuthority ||
+                this.isPhysicalAssetAuthority ||
+                this.isMarketAuthority
+            )
         },
     },
 }
@@ -140,7 +159,7 @@ export default {
     font-family: 'Poppins', sans-serif;
 }
 
-#drawer {
-    background-color: lightgray;
+.v-card__title {
+    font-size: 2.125rem !important;
 }
 </style>
