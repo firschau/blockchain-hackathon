@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-title>New Consumption Plant</v-card-title>
+        <v-card-title>New Generation Plant</v-card-title>
         <v-card-text>
             <v-form>
                 <v-row>
@@ -14,11 +14,7 @@
                         <v-select label="Plant Type" v-model="plantType" :items="plantTypes"></v-select>
                     </v-col>
                     <v-col cols="6">
-                        <v-text-field
-                            label="Maximum Consumption Capacity"
-                            v-model="maxCon"
-                            type="number"
-                        ></v-text-field>
+                        <v-text-field label="Maximum Generation Capacity" v-model="maxGen" type="number"></v-text-field>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field label="Latitude" v-model="lat" type="number"></v-text-field>
@@ -35,21 +31,24 @@
         <v-card-actions>
             <v-btn @click="$emit('close')">Cancel</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" @click="createNewIdentityContract">Add Consumption Plant</v-btn>
+            <v-btn color="primary" @click="createNewIdentityContract">Add Generation Plant</v-btn>
         </v-card-actions>
+        <v-overlay absolute :value="addNewGenerationPlantLoading"
+            ><v-progress-circular indeterminate size="64"></v-progress-circular
+        ></v-overlay>
     </v-card>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { getNewContract } from '../utils/drizzle'
-import { claimTypes } from '../utils/claims'
-import IdentityContract from '../contracts/IdentityContract.json'
+import { getNewContract } from '@/utils/drizzle'
+import { claimTypes } from '@/utils/claims'
+import IdentityContract from '@/contracts/IdentityContract.json'
 
-import DatePicker from './DatePicker.vue'
+import DatePicker from '@/components/DatePicker.vue'
 
 export default {
-    name: 'NewConsumptionPlantDialog',
+    name: 'NewGenerationPlantDialog',
 
     components: {
         DatePicker,
@@ -60,6 +59,7 @@ export default {
             identityContractCreationEventSubscription: null,
             realWorldPlantId: 'bestPlantId',
             imgURL: '',
+            plantType: '',
             plantTypes: [
                 'Photovoltaic',
                 'HydroelectricPowerPlant',
@@ -67,11 +67,12 @@ export default {
                 'NuclearPowerPlant',
                 'Coal-FiredPowerPlant',
             ],
-            maxCon: 300000000,
+            maxGen: 300000000,
             lat: 0,
             long: 0,
             expiryDate: Date.now() + 24 * 60 * 60 * 1000 * 365 * 10,
             startDate: Date.now() / 1000,
+            addNewGenerationPlantLoading: false,
         }
     },
 
@@ -79,7 +80,7 @@ export default {
         this.identityContractCreationEventSubscription = this.drizzleInstance.contracts.IdentityContractFactory.events.IdentityContractCreation(
             {},
             (error, payload) => {
-                this.addConsumptionPlant(payload.returnValues.idcAddress)
+                this.addGenerationPlant(payload.returnValues.idcAddress)
             }
         )
     },
@@ -90,12 +91,13 @@ export default {
 
     methods: {
         createNewIdentityContract() {
+            this.addNewGenerationPlantLoading = true
             this.drizzleInstance.contracts.IdentityContractFactory.methods
                 .createIdentityContract()
                 .send({ from: this.activeAccount })
                 .then((data) => console.log(data))
         },
-        async addConsumptionPlant(idcAddress) {
+        async addGenerationPlant(idcAddress) {
             const identityContract = getNewContract(IdentityContract, idcAddress)
 
             const owner = await identityContract.methods.owner().call()
@@ -128,12 +130,13 @@ export default {
                         )
                         .send({ from: this.activeAccount })
                         .then(() => {
-                            const consumptionPlant = {
+                            const generationPlant = {
                                 owner: this.activeAccount,
                                 idcAddress: identityContract.options.address,
                                 realWorldPlantId: this.realWorldPlantId,
                                 imgURL: this.imgURL,
-                                maxCon: this.maxCon,
+                                plantType: this.plantType,
+                                maxGen: this.maxGen,
                                 lat: this.lat,
                                 long: this.long,
                                 expiryDate: this.expiryDate / 1000,
@@ -142,20 +145,20 @@ export default {
                                     MeteringClaim: null,
                                     BalanceClaim: null,
                                     ExistenceClaim: null,
-                                    ConsumptionTypeClaim: null,
+                                    GenerationTypeClaim: null,
                                     LocationClaim: null,
-                                    MaxPowerConsumptionClaim: null,
+                                    MaxPowerGenerationClaim: null,
                                 },
                             }
 
-                            fetch('/api/consumptionPlants', {
+                            fetch('/api/generationPlants', {
                                 method: 'post',
                                 headers: {
                                     'Content-Type': 'application/json',
                                 },
-                                body: JSON.stringify(consumptionPlant),
+                                body: JSON.stringify(generationPlant),
                             }).then(() => {
-                                this.$emit('consumption-plant-added', consumptionPlant)
+                                this.$emit('generation-plant-added', generationPlant)
                                 this.$emit('close')
                             })
                         })

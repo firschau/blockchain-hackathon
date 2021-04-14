@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Claims from '../views/Claims.vue'
 import Authorities from '../views/Authorities.vue'
 import IdentityContracts from '../views/IdentityContracts.vue'
 import GenerationPlants from '../views/GenerationPlants.vue'
 import ConsumptionPlants from '../views/ConsumptionPlants.vue'
-import NewGenerationPlants from '../views/NewGenerationPlants.vue'
-import NewConsumptionPlants from '../views/NewConsumptionPlants.vue'
+import Claims from '../views/admin/Claims.vue'
+import SignGenerationPlants from '../views/admin/SignGenerationPlants.vue'
+import SignConsumptionPlants from '../views/admin/SignConsumptionPlants.vue'
 
 Vue.use(VueRouter)
 
@@ -38,12 +38,12 @@ const routes = [
         component: ConsumptionPlants,
     },
     {
-        path: '/newGenerationPlants',
-        component: NewGenerationPlants,
+        path: '/signGenerationPlants',
+        component: SignGenerationPlants,
     },
     {
-        path: '/newConsumptionPlants',
-        component: NewConsumptionPlants,
+        path: '/signConsumptionPlants',
+        component: SignConsumptionPlants,
     },
 ]
 

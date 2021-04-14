@@ -13,7 +13,7 @@
                     class="mx-auto"
                     width="50%"
                 ></v-img>
-                <v-row>
+                <v-row v-if="Object.keys(generationPlants).length">
                     <v-col cols="3" v-for="generationPlant in generationPlants" :key="generationPlant.idcAddress">
                         <generation-plant-card :generation-plant="generationPlant" />
                     </v-col>
@@ -33,8 +33,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NewGenerationPlantDialog from '../components/NewGenerationPlantDialog.vue'
-import GenerationPlantCard from '../components/GenerationPlantCard.vue'
+import NewGenerationPlantDialog from '@/components/generationPlants/NewGenerationPlantDialog.vue'
+import GenerationPlantCard from '@/components/generationPlants/GenerationPlantCard.vue'
 
 export default {
     name: 'GenerationPlantsView',

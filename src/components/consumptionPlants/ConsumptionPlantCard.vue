@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <div class="pa-1">
-            <v-img src="../assets/undraw_wind_turbine.svg" contain></v-img>
+            <v-img src="@/assets/undraw_houses.svg" contain></v-img>
         </div>
         <v-divider />
         <v-card-text>
@@ -27,37 +27,22 @@
                 </v-col>
                 <v-col cols="8">
                     <span>
-                        <b>Plant Type:</b>
-                        {{ plantType }}
+                        <b>Max Consumption Capacity:</b>
+                        {{ maxCon }}
                     </span>
                 </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="GenerationTypeClaim === 'claimed'" color="success" large>mdi-check-circle</v-icon>
-                        <v-btn @click="addGenerationTypeClaim" v-if="GenerationTypeClaim === 'approved'" color="primary"
-                            >Claim</v-btn
-                        >
-                        <div v-if="GenerationTypeClaim === 'waiting'">...waiting for approval</div>
-                    </div>
-                </v-col>
-                <v-col cols="8">
-                    <span>
-                        <b>Max Generation Capacity:</b>
-                        {{ maxGen }}
-                    </span>
-                </v-col>
-                <v-col cols="4">
-                    <div class="d-flex justify-center">
-                        <v-icon v-if="MaxPowerGenerationClaim === 'claimed'" color="success" large
+                        <v-icon v-if="MaxPowerConsumptionClaim === 'claimed'" color="success" large
                             >mdi-check-circle</v-icon
                         >
                         <v-btn
-                            @click="addMaxPowerGenerationClaim"
-                            v-if="MaxPowerGenerationClaim === 'approved'"
+                            @click="addMaxPowerConsumptionClaim"
+                            v-if="MaxPowerConsumptionClaim === 'approved'"
                             color="primary"
                             >Claim</v-btn
                         >
-                        <div v-if="MaxPowerGenerationClaim === 'waiting'">...waiting for approval</div>
+                        <div v-if="MaxPowerConsumptionClaim === 'waiting'">...waiting for approval</div>
                     </div>
                 </v-col>
                 <v-col cols="8">
@@ -107,25 +92,24 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { claimTypes, serializeClaim } from '../utils/claims'
-import { getNewContract } from '../utils/drizzle'
-import IdentityContract from '../contracts/IdentityContract.json'
+import { claimTypes, serializeClaim } from '@/utils/claims'
+import { getNewContract } from '@/utils/drizzle'
+import IdentityContract from '@/contracts/IdentityContract.json'
 
-const claimsOfGenerationPlants = [
+const claimsOfConsumptionPlants = [
     claimTypes.RealWorldPlantIdClaim,
     claimTypes.ExistenceClaim,
     claimTypes.MeteringClaim,
     claimTypes.BalanceClaim,
     claimTypes.LocationClaim,
-    claimTypes.GenerationTypeClaim,
-    claimTypes.MaxPowerGenerationClaim,
+    claimTypes.MaxPowerConsumptionClaim,
 ]
 
 export default {
-    name: 'GenerationPlantCard',
+    name: 'ConsumptionPlantCard',
 
     props: {
-        generationPlant: {
+        consumptionPlant: {
             type: Object,
             required: false,
         },
@@ -145,72 +129,72 @@ export default {
     methods: {
         loadChainData() {
             this.chainDataLoaded = false
-            const identityContract = getNewContract(IdentityContract, this.generationPlant.idcAddress)
+            const identityContract = getNewContract(IdentityContract, this.consumptionPlant.idcAddress)
 
-            claimsOfGenerationPlants.forEach(async (claimType) => {
+            claimsOfConsumptionPlants.forEach(async (claimType) => {
                 const claimIds = await identityContract.methods.getClaimIdsByTopic(claimType).call()
                 claimIds.forEach(async (claimId) => {
                     const claim = await identityContract.methods.getClaim(claimId).call().then(serializeClaim)
 
                     this.$set(this.chainData, claimType, claim)
                 })
-                if (claimsOfGenerationPlants.indexOf(claimType) === claimsOfGenerationPlants.length - 1)
+                if (claimsOfConsumptionPlants.indexOf(claimType) === claimsOfConsumptionPlants.length - 1)
                     this.chainDataLoaded = true
             })
         },
         getStatus(claimType) {
             if (this.chainData[claimTypes[claimType]]) return 'claimed'
-            if (this.generationPlant?.signatures[claimType]) return 'approved'
+            if (this.consumptionPlant?.signatures[claimType]) return 'approved'
             else return 'waiting'
         },
         addExistenceClaim() {
             const data = {
-                type: 'generation',
-                imgURL: this.generationPlant.imgURL,
+                type: 'consumption',
+                imgURL: this.consumptionPlant.imgURL,
             }
 
             this.addClaim(
                 claimTypes.ExistenceClaim,
                 data,
-                this.generationPlant.signatures['ExistenceClaim'].signature,
-                this.generationPlant.signatures['ExistenceClaim'].issuer
+                this.consumptionPlant.signatures['ExistenceClaim'].signature,
+                this.consumptionPlant.signatures['ExistenceClaim'].issuer
             )
         },
-        addGenerationTypeClaim() {
+        addConsumptionTypeClaim() {
             const data = {
-                plantType: this.generationPlant.plantType,
+                plantType: this.consumptionPlant.plantType,
             }
 
             this.addClaim(
-                claimTypes.GenerationTypeClaim,
+                claimTypes.ConsumptionTypeClaim,
                 data,
-                this.generationPlant.signatures['GenerationTypeClaim'].signature,
-                this.generationPlant.signatures['GenerationTypeClaim'].issuer
+                this.consumptionPlant.signatures['ConsumptionTypeClaim'].signature,
+                this.consumptionPlant.signatures['ConsumptionTypeClaim'].issuer
             )
         },
-        addMaxPowerGenerationClaim() {
+        addMaxPowerConsumptionClaim() {
             const data = {
-                maxGen: this.generationPlant.maxGen,
+                maxCon: this.consumptionPlant.maxCon,
             }
 
             this.addClaim(
-                claimTypes.MaxPowerGenerationClaim,
+                claimTypes.MaxPowerConsumptionClaim,
                 data,
-                this.generationPlant.signatures['MaxPowerGenerationClaim'].signature,
-                this.generationPlant.signatures['MaxPowerGenerationClaim'].issuer
+                this.consumptionPlant.signatures['MaxPowerConsumptionClaim'].signature,
+                this.consumptionPlant.signatures['MaxPowerConsumptionClaim'].issuer
             )
         },
         addLocationClaim() {
             const data = {
-                lat: this.generationPlant.lat,
-                long: this.generationPlant.long,
+                lat: this.consumptionPlant.lat,
+                long: this.consumptionPlant.long,
             }
 
             this.addClaim(
                 claimTypes.LocationClaim,
                 data,
-                this.generationPlant.signatures['LocationClaim'].signature,
-                this.generationPlant.signatures['LocationClaim'].issuer
+                this.consumptionPlant.signatures['LocationClaim'].signature,
+                this.consumptionPlant.signatures['LocationClaim'].issuer
             )
         },
         addMeteringClaim() {
@@ -219,8 +203,8 @@ export default {
             this.addClaim(
                 claimTypes.MeteringClaim,
                 data,
-                this.generationPlant.signatures['MeteringClaim'].signature,
-                this.generationPlant.signatures['MeteringClaim'].issuer
+                this.consumptionPlant.signatures['MeteringClaim'].signature,
+                this.consumptionPlant.signatures['MeteringClaim'].issuer
             )
         },
         addBalanceClaim() {
@@ -229,19 +213,19 @@ export default {
             this.addClaim(
                 claimTypes.BalanceClaim,
                 data,
-                this.generationPlant.signatures['BalanceClaim'].signature,
-                this.generationPlant.signatures['BalanceClaim'].issuer
+                this.consumptionPlant.signatures['BalanceClaim'].signature,
+                this.consumptionPlant.signatures['BalanceClaim'].issuer
             )
         },
         addClaim(claimType, data, signature, issuer) {
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex({
                 ...data,
-                expiryDate: this.generationPlant.expiryDate,
-                startDate: this.generationPlant.startDate,
-                realWorldPlantId: this.generationPlant.realWorldPlantId,
+                expiryDate: this.consumptionPlant.expiryDate,
+                startDate: this.consumptionPlant.startDate,
+                realWorldPlantId: this.consumptionPlant.realWorldPlantId,
             })
 
-            const identityContract = getNewContract(IdentityContract, this.generationPlant.idcAddress)
+            const identityContract = getNewContract(IdentityContract, this.consumptionPlant.idcAddress)
 
             identityContract.methods
                 .addClaim(claimType, 1, issuer, signature, hexlifiedData, '')
@@ -258,25 +242,22 @@ export default {
         realWorldPlantId() {
             return (
                 this.chainData[claimTypes.RealWorldPlantIdClaim]?.__data?.realWorldPlantId ||
-                this.generationPlant?.realWorldPlantId
+                this.consumptionPlant?.realWorldPlantId
             )
         },
-        plantType() {
-            return this.chainData[claimTypes.GenerationTypeClaim]?.__data?.plantType || this.generationPlant?.plantType
-        },
-        maxGen() {
-            return this.chainData[claimTypes.MaxPowerGenerationClaim]?.__data?.maxGen || this.generationPlant?.maxGen
+        maxCon() {
+            return this.chainData[claimTypes.MaxPowerConsumptionClaim]?.__data?.maxCon || this.consumptionPlant?.maxCon
         },
         lat() {
-            return this.chainData[claimTypes.LocationClaim]?.__data?.lat || this.generationPlant?.lat
+            return this.chainData[claimTypes.LocationClaim]?.__data?.lat || this.consumptionPlant?.lat
         },
         long() {
-            return this.chainData[claimTypes.LocationClaim]?.__data?.long || this.generationPlant?.long
+            return this.chainData[claimTypes.LocationClaim]?.__data?.long || this.consumptionPlant?.long
         },
         expiryDate() {
             return new Date(
                 this.chainData[claimTypes.RealWorldPlantIdClaim]?.__data.expiryDate * 1000 ||
-                    this.generationPlant.expiryDate * 1000
+                    this.consumptionPlant.expiryDate * 1000
             ).toLocaleDateString()
         },
         MeteringClaim() {
@@ -285,14 +266,14 @@ export default {
         BalanceClaim() {
             return this.getStatus('BalanceClaim')
         },
-        MaxPowerGenerationClaim() {
-            return this.getStatus('MaxPowerGenerationClaim')
+        MaxPowerConsumptionClaim() {
+            return this.getStatus('MaxPowerConsumptionClaim')
         },
         ExistenceClaim() {
             return this.getStatus('ExistenceClaim')
         },
-        GenerationTypeClaim() {
-            return this.getStatus('GenerationTypeClaim')
+        ConsumptionTypeClaim() {
+            return this.getStatus('ConsumptionTypeClaim')
         },
         LocationClaim() {
             return this.getStatus('LocationClaim')

@@ -9,11 +9,11 @@
             <v-card-text class="pt-4">
                 <v-img
                     v-if="Object.keys(consumptionPlants).length === 0"
-                    src="../assets/undraw_wind_turbine.svg"
+                    src="../assets/undraw_houses.svg"
                     class="mx-auto"
                     width="50%"
                 ></v-img>
-                <v-row>
+                <v-row v-if="Object.keys(consumptionPlants).length">
                     <v-col cols="3" v-for="consumptionPlant in consumptionPlants" :key="consumptionPlant.idcAddress">
                         <consumption-plant-card :consumption-plant="consumptionPlant" />
                     </v-col>
@@ -33,8 +33,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NewConsumptionPlantDialog from '../components/NewConsumptionPlantDialog.vue'
-import ConsumptionPlantCard from '../components/ConsumptionPlantCard.vue'
+import NewConsumptionPlantDialog from '@/components/consumptionPlants/NewConsumptionPlantDialog.vue'
+import ConsumptionPlantCard from '@/components/consumptionPlants/ConsumptionPlantCard.vue'
 
 export default {
     name: 'ConsumptionPlantsView',

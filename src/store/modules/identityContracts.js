@@ -1,7 +1,6 @@
 import store from '../index'
 
 import { getNewContract } from '../../utils/drizzle'
-import { claimTypes } from '../../utils/claims'
 import IdentityContractFactory from '../../contracts/IdentityContractFactory.json'
 import IdentityContract from '../../contracts/IdentityContract.json'
 
@@ -25,9 +24,6 @@ export const identityContractsModule = {
         },
         ADD_IDENTITY_CONTRACTS(state, newIdentityContracts) {
             state.identityContracts.push(...newIdentityContracts)
-        },
-        ADD_CLAIM_FOR_IDENTITY_CONTRACT(state, { idcAddress, claim }) {
-            state.identityContracts.find((idc) => idc.idcAddress === idcAddress)?.claims.push(claim)
         },
     },
     actions: {
@@ -69,31 +65,11 @@ export const identityContractsModule = {
 
                 ctx.commit('ADD_IDENTITY_CONTRACTS', [marketAuthority, ...identityContracts])
 
-                ctx.dispatch('getAndSetClaims')
-
                 return [marketAuthority, ...identityContracts]
             }
         },
         addIdentityContract(ctx, identityContract) {
             ctx.commit('ADD_IDENTITY_CONTRACT', identityContract)
-        },
-        async getAndSetClaims(ctx) {
-            ctx.state.identityContracts.forEach((idc) => {
-                Object.values(claimTypes).forEach(async (claimType) => {
-                    const claimIds = await idc.web3Contract.methods.getClaimIdsByTopic(claimType).call()
-                    claimIds.forEach((claimId) => {
-                        idc.web3Contract.methods
-                            .getClaim(claimId)
-                            .call()
-                            .then((claim) => {
-                                ctx.commit('ADD_CLAIM_FOR_IDENTITY_CONTRACT', {
-                                    idcAddress: idc.idcAddress,
-                                    claim: { id: claimId, ...claim },
-                                })
-                            })
-                    })
-                })
-            })
         },
     },
     namespaced: true,

@@ -1,57 +1,56 @@
 <template>
     <v-container>
         <v-card>
+            <v-card-title> New Consumption Plants to Sign </v-card-title>
             <v-card-text>
-                <v-row>
-                    <v-col cols="3" v-for="generationPlant in filteredGenerationPlants" :key="generationPlant.id">
-                        <new-generation-plant-card :generation-plant="generationPlant" />
+                <v-row v-if="filteredConsumptionPlants.length">
+                    <v-col cols="3" v-for="consumptionPlant in filteredConsumptionPlants" :key="consumptionPlant.id">
+                        <sign-consumption-plant-card :consumption-plant="consumptionPlant" />
                     </v-col>
                 </v-row>
+                <v-img v-else src="@/assets/undraw_houses.svg" class="mx-auto" width="50%"></v-img>
             </v-card-text>
         </v-card>
     </v-container>
 </template>
 
 <script>
-import NewGenerationPlantCard from '../components/NewGenerationPlantCard'
+import SignConsumptionPlantCard from '@/components/admin/SignConsumptionPlantCard'
 import { mapState } from 'vuex'
 export default {
-    name: 'NewGenerationPlants',
+    name: 'NewConsumptionPlants',
 
     components: {
-        NewGenerationPlantCard,
+        SignConsumptionPlantCard,
     },
 
     data() {
         return {
-            generationPlants: [],
+            consumptionPlants: [],
         }
     },
 
     created() {
-        fetch('/api/generationPlants', {
+        fetch('/api/consumptionPlants', {
             headers: {
                 'Content-Type': 'application/json',
             },
         })
             .then((response) => response.json())
             .then((data) => {
-                this.generationPlants = data
+                this.consumptionPlants = data
             })
     },
 
     computed: {
         ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
-        filteredGenerationPlants() {
-            return this.generationPlants.filter(
+        filteredConsumptionPlants() {
+            return this.consumptionPlants.filter(
                 (plant) =>
                     (!plant.signatures.BalanceClaim && this.isBalanceAuthority) ||
                     (this.isMeteringAuthority && !plant.signatures.MeteringClaim) ||
                     (this.isPhysicalAssetAuthority &&
-                        (!plant.signatures.ExistenceClaim ||
-                            !plant.signatures.GenerationTypeClaim ||
-                            !plant.signatures.LocationClaim ||
-                            !plant.signatures.MaxPowerGenerationClaim))
+                        (!plant.signatures.ExistenceClaim || !plant.signatures.MaxPowerConsumptionClaim))
             )
         },
     },

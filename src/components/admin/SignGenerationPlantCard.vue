@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <div class="pa-1">
-            <v-img src="../assets/undraw_wind_turbine.svg" contain></v-img>
+            <v-img src="@/assets/undraw_wind_turbine.svg" contain></v-img>
         </div>
         <v-divider />
         <v-card-text>
@@ -9,11 +9,11 @@
                 <v-col cols="8">
                     <div>
                         <b>Expiry Date:</b>
-                        {{ consumptionPlant.expiryDate }}
+                        {{ generationPlant.expiryDate }}
                     </div>
                     <div>
                         <b>Real World Plant Id:</b>
-                        {{ consumptionPlant.realWorldPlantId }}
+                        {{ generationPlant.realWorldPlantId }}
                     </div>
                 </v-col>
                 <v-col cols="4">
@@ -26,18 +26,37 @@
                 </v-col>
                 <v-col cols="8">
                     <span>
-                        <b>Max Consumption Capacity:</b>
-                        {{ consumptionPlant.maxGen }}
+                        <b>Plant Type:</b>
+                        {{ generationPlant.plantType }}
                     </span>
                 </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="signatures.MaxPowerConsumptionClaim" color="success" large>
+                        <v-icon v-if="signatures.GenerationTypeClaim" color="success" large> mdi-check-circle </v-icon>
+                        <v-btn
+                            v-else
+                            @click="signGenerationTypeClaim"
+                            :disabled="!isPhysicalAssetAuthority"
+                            color="primary"
+                        >
+                            Sign
+                        </v-btn>
+                    </div>
+                </v-col>
+                <v-col cols="8">
+                    <span>
+                        <b>Max Generation Capacity:</b>
+                        {{ generationPlant.maxGen }}
+                    </span>
+                </v-col>
+                <v-col cols="4">
+                    <div class="d-flex justify-center">
+                        <v-icon v-if="signatures.MaxPowerGenerationClaim" color="success" large>
                             mdi-check-circle
                         </v-icon>
                         <v-btn
                             v-else
-                            @click="signMaxPowerConsumptionClaim"
+                            @click="signMaxPowerGenerationClaim"
                             :disabled="!isPhysicalAssetAuthority"
                             color="primary"
                         >
@@ -48,11 +67,11 @@
                 <v-col cols="8">
                     <div>
                         <b>lat:</b>
-                        {{ consumptionPlant.lat }}
+                        {{ generationPlant.lat }}
                     </div>
                     <div>
                         <b>long:</b>
-                        {{ consumptionPlant.long }}
+                        {{ generationPlant.long }}
                     </div>
                 </v-col>
                 <v-col cols="4">
@@ -88,13 +107,13 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { claimTypes } from '../utils/claims'
+import { claimTypes } from '@/utils/claims'
 
 export default {
-    name: 'NewConsumptionPlantCard',
+    name: 'NewGenerationPlantCard',
 
     props: {
-        consumptionPlant: {
+        generationPlant: {
             type: Object,
             required: true,
         },
@@ -102,24 +121,24 @@ export default {
 
     data() {
         return {
-            signatures: this.consumptionPlant.signatures,
+            signatures: this.generationPlant.signatures,
         }
     },
 
     methods: {
         signExistenceClaim() {
             const data = {
-                type: 'consumption',
-                imgURL: this.consumptionPlant.imgURL,
-                expiryDate: this.consumptionPlant.expiryDate,
-                startDate: this.consumptionPlant.startDate,
-                realWorldPlantId: this.consumptionPlant.realWorldPlantId,
+                type: 'generation',
+                imgURL: this.generationPlant.imgURL,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
             }
 
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex(data)
 
             const hashToSign = this.drizzleInstance.web3.utils.soliditySha3(
-                this.consumptionPlant.idcAddress,
+                this.generationPlant.idcAddress,
                 claimTypes.ExistenceClaim,
                 hexlifiedData
             )
@@ -130,59 +149,90 @@ export default {
                     issuer: this.activeAccountIdentityContracts[0].idcAddress,
                 }
 
-                fetch(`/api/consumptionPlants/${this.consumptionPlant.id}`, {
+                fetch(`/api/generationPlants/${this.generationPlant.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ ...this.consumptionPlant, signatures: this.signatures }),
+                    body: JSON.stringify({ ...this.generationPlant, signatures: this.signatures }),
                 })
             })
         },
-        signMaxPowerConsumptionClaim() {
+        signGenerationTypeClaim() {
             const data = {
-                maxGen: this.consumptionPlant.maxGen,
-                expiryDate: this.consumptionPlant.expiryDate,
-                startDate: this.consumptionPlant.startDate,
-                realWorldPlantId: this.consumptionPlant.realWorldPlantId,
+                plantType: this.generationPlant.plantType,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
             }
 
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex(data)
 
             const hashToSign = this.drizzleInstance.web3.utils.soliditySha3(
-                this.consumptionPlant.idcAddress,
-                claimTypes.MaxPowerConsumptionClaim,
+                this.generationPlant.idcAddress,
+                claimTypes.GenerationTypeClaim,
                 hexlifiedData
             )
 
             this.drizzleInstance.web3.eth.sign(hashToSign, this.activeAccount).then((signature) => {
-                this.signatures.MaxPowerConsumptionClaim = {
+                this.signatures.GenerationTypeClaim = {
                     signature,
                     issuer: this.activeAccountIdentityContracts[0].idcAddress,
                 }
 
-                fetch(`/api/consumptionPlants/${this.consumptionPlant.id}`, {
+                fetch(`/api/generationPlants/${this.generationPlant.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ ...this.consumptionPlant, signatures: this.signatures }),
+                    body: JSON.stringify({ ...this.generationPlant, signatures: this.signatures }),
+                })
+            })
+        },
+        signMaxPowerGenerationClaim() {
+            const data = {
+                maxGen: this.generationPlant.maxGen,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
+            }
+
+            const hexlifiedData = this.drizzleInstance.web3.utils.toHex(data)
+
+            const hashToSign = this.drizzleInstance.web3.utils.soliditySha3(
+                this.generationPlant.idcAddress,
+                claimTypes.MaxPowerGenerationClaim,
+                hexlifiedData
+            )
+
+            this.drizzleInstance.web3.eth.sign(hashToSign, this.activeAccount).then((signature) => {
+                this.signatures.MaxPowerGenerationClaim = {
+                    signature,
+                    issuer: this.activeAccountIdentityContracts[0].idcAddress,
+                }
+
+                fetch(`/api/generationPlants/${this.generationPlant.id}`, {
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ...this.generationPlant, signatures: this.signatures }),
                 })
             })
         },
         signLocationClaim() {
             const data = {
-                lat: this.consumptionPlant.lat,
-                long: this.consumptionPlant.long,
-                expiryDate: this.consumptionPlant.expiryDate,
-                startDate: this.consumptionPlant.startDate,
-                realWorldPlantId: this.consumptionPlant.realWorldPlantId,
+                lat: this.generationPlant.lat,
+                long: this.generationPlant.long,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
             }
 
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex(data)
 
             const hashToSign = this.drizzleInstance.web3.utils.soliditySha3(
-                this.consumptionPlant.idcAddress,
+                this.generationPlant.idcAddress,
                 claimTypes.LocationClaim,
                 hexlifiedData
             )
@@ -193,26 +243,26 @@ export default {
                     issuer: this.activeAccountIdentityContracts[0].idcAddress,
                 }
 
-                fetch(`/api/consumptionPlants/${this.consumptionPlant.id}`, {
+                fetch(`/api/generationPlants/${this.generationPlant.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ ...this.consumptionPlant, signatures: this.signatures }),
+                    body: JSON.stringify({ ...this.generationPlant, signatures: this.signatures }),
                 })
             })
         },
         signMeteringClaim() {
             const data = {
-                expiryDate: this.consumptionPlant.expiryDate,
-                startDate: this.consumptionPlant.startDate,
-                realWorldPlantId: this.consumptionPlant.realWorldPlantId,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
             }
 
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex(data)
 
             const hashToSign = this.drizzleInstance.web3.utils.soliditySha3(
-                this.consumptionPlant.idcAddress,
+                this.generationPlant.idcAddress,
                 claimTypes.MeteringClaim,
                 hexlifiedData
             )
@@ -223,26 +273,26 @@ export default {
                     issuer: this.activeAccountIdentityContracts[0].idcAddress,
                 }
 
-                fetch(`/api/consumptionPlants/${this.consumptionPlant.id}`, {
+                fetch(`/api/generationPlants/${this.generationPlant.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ ...this.consumptionPlant, signatures: this.signatures }),
+                    body: JSON.stringify({ ...this.generationPlant, signatures: this.signatures }),
                 })
             })
         },
         signBalanceClaim() {
             const data = {
-                expiryDate: this.consumptionPlant.expiryDate,
-                startDate: this.consumptionPlant.startDate,
-                realWorldPlantId: this.consumptionPlant.realWorldPlantId,
+                expiryDate: this.generationPlant.expiryDate,
+                startDate: this.generationPlant.startDate,
+                realWorldPlantId: this.generationPlant.realWorldPlantId,
             }
 
             const hexlifiedData = this.drizzleInstance.web3.utils.toHex(data)
 
             const hashToSign = this.drizzleInstance.web3.utils.soliditySha3(
-                this.consumptionPlant.idcAddress,
+                this.generationPlant.idcAddress,
                 claimTypes.BalanceClaim,
                 hexlifiedData
             )
@@ -253,12 +303,12 @@ export default {
                     issuer: this.activeAccountIdentityContracts[0].idcAddress,
                 }
 
-                fetch(`/api/consumptionPlants/${this.consumptionPlant.id}`, {
+                fetch(`/api/generationPlants/${this.generationPlant.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ ...this.consumptionPlant, signatures: this.signatures }),
+                    body: JSON.stringify({ ...this.generationPlant, signatures: this.signatures }),
                 })
             })
         },

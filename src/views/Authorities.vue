@@ -1,25 +1,73 @@
 <template>
     <v-container>
         <v-card>
-            <v-card-title>
-                <h2>Market Authority</h2>
-            </v-card-title>
-            <v-card-text>
+            <v-card-title> Market Authority </v-card-title>
+            <v-card-text class="pt-4">
+                <v-list>
+                    <v-list-item>
+                        <v-list-item-content>
+                            <v-list-item-title> IdentityContract Address </v-list-item-title>
+                            <v-list-item-subtitle>
+                                {{ drizzleInstance.contracts.IdentityContract.address }}
+                            </v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
                 <v-row>
-                    <v-col>
-                        {{ drizzleInstance.contracts.IdentityContract.address }}
-                    </v-col>
+                    <v-col> </v-col>
                 </v-row>
             </v-card-text>
         </v-card>
-        <v-card v-for="[claimTypeName, claimTypeId] in Object.entries(claimTypes)" :key="claimTypeId" class="mt-4">
-            <v-card-title>
-                <h2>{{ claimTypeName }}</h2>
-            </v-card-title>
-            <v-card-text>
-                <v-list v-if="identityContractsByClaimType[claimTypeName]">
-                    <v-list-item v-for="address in identityContractsByClaimType[claimTypeName]" :key="address">
-                        {{ address }}
+        <v-card class="mt-4">
+            <v-card-title> Balance Authorities </v-card-title>
+            <v-card-text class="pt-4">
+                <v-list v-if="identityContractsByClaimType[claimTypes.IsBalanceAuthority]">
+                    <v-list-item
+                        v-for="address in identityContractsByClaimType[claimTypes.IsBalanceAuthority]"
+                        :key="address"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>IdentityContract Address</v-list-item-title>
+                            <v-list-item-subtitle>
+                                {{ address }}
+                            </v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+            </v-card-text>
+        </v-card>
+        <v-card class="mt-4">
+            <v-card-title> Metering Authorities </v-card-title>
+            <v-card-text class="pt-4">
+                <v-list v-if="identityContractsByClaimType[claimTypes.IsMeteringAuthority]">
+                    <v-list-item
+                        v-for="address in identityContractsByClaimType[claimTypes.IsMeteringAuthority]"
+                        :key="address"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>IdentityContract Address</v-list-item-title>
+                            <v-list-item-subtitle>
+                                {{ address }}
+                            </v-list-item-subtitle>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list>
+            </v-card-text>
+        </v-card>
+        <v-card class="mt-4">
+            <v-card-title> Physical Asset Authorities </v-card-title>
+            <v-card-text class="pt-4">
+                <v-list v-if="identityContractsByClaimType[claimTypes.IsPhysicalAssetAuthority]">
+                    <v-list-item
+                        v-for="address in identityContractsByClaimType[claimTypes.IsPhysicalAssetAuthority]"
+                        :key="address"
+                    >
+                        <v-list-item-content>
+                            <v-list-item-title>IdentityContract Address</v-list-item-title>
+                            <v-list-item-subtitle>
+                                {{ address }}
+                            </v-list-item-subtitle>
+                        </v-list-item-content>
                     </v-list-item>
                 </v-list>
             </v-card-text>
@@ -55,22 +103,26 @@ export default {
 
                 // foreach identity contract foreach claimtype
                 identityContracts.forEach((identityContract) => {
-                    for (const [claimTypeName, claimTypeId] of Object.entries(this.claimTypes)) {
+                    for (const claimType of [
+                        claimTypes.IsBalanceAuthority,
+                        claimTypes.IsMeteringAuthority,
+                        claimTypes.IsPhysicalAssetAuthority,
+                    ]) {
                         // get ids of claims and add the identity contract addresses to the respective claim type if there are claims
                         identityContract.methods
-                            .getClaimIdsByTopic(claimTypeId)
+                            .getClaimIdsByTopic(claimType)
                             .call()
                             .then((ids) => {
                                 if (ids.length) {
                                     // push if there are existing identity contracts
-                                    if (this.identityContractsByClaimType[claimTypeName]) {
-                                        this.identityContractsByClaimType[claimTypeName].push(
+                                    if (this.identityContractsByClaimType[claimType]) {
+                                        this.identityContractsByClaimType[claimType].push(
                                             identityContract.options.address
                                         )
                                     }
                                     // set if there aren't existing identity contracts
                                     else {
-                                        this.$set(this.identityContractsByClaimType, claimTypeName, [
+                                        this.$set(this.identityContractsByClaimType, claimType, [
                                             identityContract.options.address,
                                         ])
                                     }
