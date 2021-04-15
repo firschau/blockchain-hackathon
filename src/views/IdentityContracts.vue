@@ -4,7 +4,9 @@
             <v-card-title>
                 My Identity Contracts
                 <v-spacer />
-                <v-btn @click="createNew" color="primary" class="white--text"> Create New Identity Contract </v-btn>
+                <v-btn @click="createNewIdentityContract" color="primary" class="white--text">
+                    Create New Identity Contract
+                </v-btn>
             </v-card-title>
             <v-card-text class="pt-4">
                 <v-row v-if="activeAccountIdentityContracts.length">
@@ -78,7 +80,7 @@ export default {
 
     methods: {
         claimTypeToName,
-        createNew() {
+        createNewIdentityContract() {
             this.drizzleInstance.contracts.IdentityContractFactory.methods
                 .createIdentityContract()
                 .send({ from: this.activeAccount })

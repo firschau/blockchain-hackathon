@@ -58,6 +58,7 @@ export function claimTypeToName(claimType) {
 export function serializeClaim(claim) {
     return {
         ...claim,
+        __topic: +claim.__topic,
         __data: JSON.parse(store.getters['drizzle/drizzleInstance'].web3.utils.hexToAscii(claim.__data)),
     }
 }

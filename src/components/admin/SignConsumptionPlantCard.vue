@@ -19,7 +19,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.ExistenceClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signExistenceClaim" :disabled="!isPhysicalAssetAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signExistenceClaim"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -27,7 +32,7 @@
                 <v-col cols="8">
                     <span>
                         <b>Max Consumption Capacity:</b>
-                        {{ consumptionPlant.maxGen }}
+                        {{ consumptionPlant.maxCon }}
                     </span>
                 </v-col>
                 <v-col cols="4">
@@ -38,7 +43,7 @@
                         <v-btn
                             v-else
                             @click="signMaxPowerConsumptionClaim"
-                            :disabled="!isPhysicalAssetAuthority"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
                             color="primary"
                         >
                             Sign
@@ -58,7 +63,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.LocationClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signLocationClaim" :disabled="!isPhysicalAssetAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signLocationClaim"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -67,7 +77,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.MeteringClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signMeteringClaim" :disabled="!isMeteringAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signMeteringClaim"
+                            :disabled="!activeAccountIsMeteringAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -76,7 +91,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.BalanceClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signBalanceClaim" :disabled="!isBalanceAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signBalanceClaim"
+                            :disabled="!activeAccountIsBalanceAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -87,7 +107,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { claimTypes } from '@/utils/claims'
 
 export default {
@@ -141,7 +161,7 @@ export default {
         },
         signMaxPowerConsumptionClaim() {
             const data = {
-                maxGen: this.consumptionPlant.maxGen,
+                maxCon: this.consumptionPlant.maxCon,
                 expiryDate: this.consumptionPlant.expiryDate,
                 startDate: this.consumptionPlant.startDate,
                 realWorldPlantId: this.consumptionPlant.realWorldPlantId,
@@ -265,10 +285,14 @@ export default {
     },
 
     computed: {
-        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
         ...mapGetters('accounts', ['activeAccount']),
         ...mapGetters('drizzle', ['drizzleInstance']),
-        ...mapGetters('identityContracts', ['activeAccountIdentityContracts']),
+        ...mapGetters('identityContracts', [
+            'activeAccountIdentityContracts',
+            'activeAccountIsBalanceAuthority',
+            'activeAccountIsMeteringAuthority',
+            'activeAccountIsPhysicalAssetAuthority',
+        ]),
     },
 }
 </script>

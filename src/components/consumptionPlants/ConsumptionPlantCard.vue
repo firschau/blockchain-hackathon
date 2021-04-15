@@ -160,18 +160,6 @@ export default {
                 this.consumptionPlant.signatures['ExistenceClaim'].issuer
             )
         },
-        addConsumptionTypeClaim() {
-            const data = {
-                plantType: this.consumptionPlant.plantType,
-            }
-
-            this.addClaim(
-                claimTypes.ConsumptionTypeClaim,
-                data,
-                this.consumptionPlant.signatures['ConsumptionTypeClaim'].signature,
-                this.consumptionPlant.signatures['ConsumptionTypeClaim'].issuer
-            )
-        },
         addMaxPowerConsumptionClaim() {
             const data = {
                 maxCon: this.consumptionPlant.maxCon,
@@ -271,9 +259,6 @@ export default {
         },
         ExistenceClaim() {
             return this.getStatus('ExistenceClaim')
-        },
-        ConsumptionTypeClaim() {
-            return this.getStatus('ConsumptionTypeClaim')
         },
         LocationClaim() {
             return this.getStatus('LocationClaim')

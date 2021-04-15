@@ -57,6 +57,7 @@ export default {
 
     methods: {
         loadGenerationPlants() {
+            this.generationPlants = {}
             fetch('/api/generationPlants', {
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,6 +73,13 @@ export default {
         },
         addGenerationPlant(generationPlant) {
             this.$set(this.generationPlants, generationPlant.idcAddress, generationPlant)
+        },
+    },
+
+    watch: {
+        activeAccount: function () {
+            console.log('activeAccountchanged')
+            this.loadGenerationPlants()
         },
     },
 

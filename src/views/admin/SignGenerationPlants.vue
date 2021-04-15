@@ -16,7 +16,7 @@
 
 <script>
 import SignGenerationPlantCard from '@/components/admin/SignGenerationPlantCard'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'SignGenerationPlants',
@@ -44,13 +44,17 @@ export default {
     },
 
     computed: {
-        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
+        ...mapGetters('identityContracts', [
+            'activeAccountIsBalanceAuthority',
+            'activeAccountIsMeteringAuthority',
+            'activeAccountIsPhysicalAssetAuthority',
+        ]),
         filteredGenerationPlants() {
             return this.generationPlants.filter(
                 (plant) =>
-                    (!plant.signatures.BalanceClaim && this.isBalanceAuthority) ||
-                    (this.isMeteringAuthority && !plant.signatures.MeteringClaim) ||
-                    (this.isPhysicalAssetAuthority &&
+                    (!plant.signatures.BalanceClaim && this.activeAccountIsBalanceAuthority) ||
+                    (this.activeAccountIsMeteringAuthority && !plant.signatures.MeteringClaim) ||
+                    (this.activeAccountIsPhysicalAssetAuthority &&
                         (!plant.signatures.ExistenceClaim ||
                             !plant.signatures.GenerationTypeClaim ||
                             !plant.signatures.LocationClaim ||

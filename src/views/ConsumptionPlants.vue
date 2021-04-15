@@ -57,6 +57,7 @@ export default {
 
     methods: {
         loadConsumptionPlants() {
+            this.consumptionPlants = {}
             fetch('/api/consumptionPlants', {
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,6 +73,12 @@ export default {
         },
         addConsumptionPlant(consumptionPlant) {
             this.$set(this.consumptionPlants, consumptionPlant.idcAddress, consumptionPlant)
+        },
+    },
+
+    watch: {
+        activeAccount: function () {
+            this.loadConsumptionPlants()
         },
     },
 

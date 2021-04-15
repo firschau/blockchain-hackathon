@@ -146,7 +146,6 @@ export default {
                                     MeteringClaim: null,
                                     BalanceClaim: null,
                                     ExistenceClaim: null,
-                                    ConsumptionTypeClaim: null,
                                     LocationClaim: null,
                                     MaxPowerConsumptionClaim: null,
                                 },

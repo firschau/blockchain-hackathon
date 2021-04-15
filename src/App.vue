@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'App',
@@ -64,16 +64,22 @@ export default {
                 { to: '/consumptionPlants', text: 'Consumtion Plants' },
             ],
             adminNavItems: [
-                { to: '/claims', text: 'Add Authority', filter: () => this.isMarketAuthority },
+                { to: '/claims', text: 'Add Authority', filter: () => this.activeAccountIsMarketAuthority },
                 {
                     to: '/signGenerationPlants',
                     text: 'Sign Generation Plants',
-                    filter: () => this.isBalanceAuthority || this.isMeteringAuthority || this.isPhysicalAssetAuthority,
+                    filter: () =>
+                        this.activeAccountIsBalanceAuthority ||
+                        this.activeAccountIsMeteringAuthority ||
+                        this.activeAccountIsPhysicalAssetAuthority,
                 },
                 {
                     to: '/signConsumptionPlants',
                     text: 'Sign Consumption Plants',
-                    filter: () => this.isBalanceAuthority || this.isMeteringAuthority || this.isPhysicalAssetAuthority,
+                    filter: () =>
+                        this.activeAccountIsBalanceAuthority ||
+                        this.activeAccountIsMeteringAuthority ||
+                        this.activeAccountIsPhysicalAssetAuthority,
                 },
             ],
         }
@@ -94,32 +100,32 @@ export default {
         // initialize active account store when the active account changes
         activeAccount() {
             if (this.isDrizzleInitialized) {
-                this.$store.dispatch('currentUser/initActiveAccount')
+                this.$store.dispatch('identityContracts/getAndSetIdentityContracts')
             }
         },
     },
 
     computed: {
-        ...mapState('currentUser', [
-            'isBalanceAuthority',
-            'isMeteringAuthority',
-            'isPhysicalAssetAuthority',
-            'isMarketAuthority',
+        ...mapGetters('identityContracts', [
+            'activeAccountIsBalanceAuthority',
+            'activeAccountIsMeteringAuthority',
+            'activeAccountIsPhysicalAssetAuthority',
+            'activeAccountIsMarketAuthority',
         ]),
         ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
         ...mapGetters('accounts', ['activeAccount']),
         appTitle() {
             let title = ''
-            if (this.$store.state.currentUser.isMarketAuthority) {
+            if (this.activeAccountIsMarketAuthority) {
                 title += 'Market Authority '
             }
-            if (this.$store.state.currentUser.isBalanceAuthority) {
+            if (this.activeAccountIsBalanceAuthority) {
                 title += 'Balance Authority '
             }
-            if (this.$store.state.currentUser.isMeteringAuthority) {
+            if (this.activeAccountIsMeteringAuthority) {
                 title += 'Metering Authority '
             }
-            if (this.$store.state.currentUser.isPhysicalAssetAuthority) {
+            if (this.activeAccountIsPhysicalAssetAuthority) {
                 title += 'Physical Asset Authority '
             }
             return title
@@ -129,10 +135,10 @@ export default {
         },
         isAdmin() {
             return (
-                this.isBalanceAuthority ||
-                this.isMeteringAuthority ||
-                this.isPhysicalAssetAuthority ||
-                this.isMarketAuthority
+                this.activeAccountIsBalanceAuthority ||
+                this.activeAccountIsMeteringAuthority ||
+                this.activeAccountIsPhysicalAssetAuthority ||
+                this.activeAccountIsMarketAuthority
             )
         },
     },

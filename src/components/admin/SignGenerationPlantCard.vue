@@ -19,7 +19,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.ExistenceClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signExistenceClaim" :disabled="!isPhysicalAssetAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signExistenceClaim"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -36,7 +41,7 @@
                         <v-btn
                             v-else
                             @click="signGenerationTypeClaim"
-                            :disabled="!isPhysicalAssetAuthority"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
                             color="primary"
                         >
                             Sign
@@ -57,7 +62,7 @@
                         <v-btn
                             v-else
                             @click="signMaxPowerGenerationClaim"
-                            :disabled="!isPhysicalAssetAuthority"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
                             color="primary"
                         >
                             Sign
@@ -77,7 +82,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.LocationClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signLocationClaim" :disabled="!isPhysicalAssetAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signLocationClaim"
+                            :disabled="!activeAccountIsPhysicalAssetAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -86,7 +96,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.MeteringClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signMeteringClaim" :disabled="!isMeteringAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signMeteringClaim"
+                            :disabled="!activeAccountIsMeteringAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -95,7 +110,12 @@
                 <v-col cols="4">
                     <div class="d-flex justify-center">
                         <v-icon v-if="signatures.BalanceClaim" color="success" large> mdi-check-circle </v-icon>
-                        <v-btn v-else @click="signBalanceClaim" :disabled="!isBalanceAuthority" color="primary">
+                        <v-btn
+                            v-else
+                            @click="signBalanceClaim"
+                            :disabled="!activeAccountIsBalanceAuthority"
+                            color="primary"
+                        >
                             Sign
                         </v-btn>
                     </div>
@@ -106,7 +126,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { claimTypes } from '@/utils/claims'
 
 export default {
@@ -315,10 +335,14 @@ export default {
     },
 
     computed: {
-        ...mapState('currentUser', ['isBalanceAuthority', 'isMeteringAuthority', 'isPhysicalAssetAuthority']),
         ...mapGetters('accounts', ['activeAccount']),
         ...mapGetters('drizzle', ['drizzleInstance']),
-        ...mapGetters('identityContracts', ['activeAccountIdentityContracts']),
+        ...mapGetters('identityContracts', [
+            'activeAccountIdentityContracts',
+            'activeAccountIsBalanceAuthority',
+            'activeAccountIsMeteringAuthority',
+            'activeAccountIsPhysicalAssetAuthority',
+        ]),
     },
 }
 </script>
