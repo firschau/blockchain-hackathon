@@ -18,7 +18,9 @@
                 </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="signatures.ExistenceClaim" color="success" large> mdi-check-circle </v-icon>
+                        <v-icon v-if="signatures[claimTypes.ExistenceClaim]" color="success" large>
+                            mdi-check-circle
+                        </v-icon>
                         <v-btn
                             v-else
                             @click="signExistenceClaim"
@@ -37,7 +39,7 @@
                 </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="signatures.MaxPowerConsumptionClaim" color="success" large>
+                        <v-icon v-if="signatures[claimTypes.MaxPowerConsumptionClaim]" color="success" large>
                             mdi-check-circle
                         </v-icon>
                         <v-btn
@@ -62,7 +64,9 @@
                 </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="signatures.LocationClaim" color="success" large> mdi-check-circle </v-icon>
+                        <v-icon v-if="signatures[claimTypes.LocationClaim]" color="success" large>
+                            mdi-check-circle
+                        </v-icon>
                         <v-btn
                             v-else
                             @click="signLocationClaim"
@@ -76,7 +80,9 @@
                 <v-col cols="8"> <b> Metering Claim </b> </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="signatures.MeteringClaim" color="success" large> mdi-check-circle </v-icon>
+                        <v-icon v-if="signatures[claimTypes.MeteringClaim]" color="success" large>
+                            mdi-check-circle
+                        </v-icon>
                         <v-btn
                             v-else
                             @click="signMeteringClaim"
@@ -90,7 +96,9 @@
                 <v-col cols="8"> <b> Balance Claim </b> </v-col>
                 <v-col cols="4">
                     <div class="d-flex justify-center">
-                        <v-icon v-if="signatures.BalanceClaim" color="success" large> mdi-check-circle </v-icon>
+                        <v-icon v-if="signatures[claimTypes.BalanceClaim]" color="success" large>
+                            mdi-check-circle
+                        </v-icon>
                         <v-btn
                             v-else
                             @click="signBalanceClaim"
@@ -114,6 +122,7 @@ export default {
     name: 'SignConsumptionPlantCard',
 
     props: {
+        // json-server data
         consumptionPlant: {
             type: Object,
             required: true,
@@ -122,6 +131,7 @@ export default {
 
     data() {
         return {
+            claimTypes,
             signatures: this.consumptionPlant.signatures,
         }
     },

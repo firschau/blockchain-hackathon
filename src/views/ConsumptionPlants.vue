@@ -15,16 +15,17 @@
                 ></v-img>
                 <v-row v-if="Object.keys(consumptionPlants).length">
                     <v-col cols="3" v-for="consumptionPlant in consumptionPlants" :key="consumptionPlant.idcAddress">
-                        <consumption-plant-card :consumption-plant="consumptionPlant" />
+                        <plant-card :plant="consumptionPlant" plant-type="consumption" />
                     </v-col>
                 </v-row>
             </v-card-text>
         </v-card>
 
         <v-dialog v-model="isNewConsumptionPlantDialogOpen" width="700">
-            <new-consumption-plant-dialog
+            <new-plant-dialog
                 v-if="isNewConsumptionPlantDialogOpen"
-                @consumption-plant-added="addConsumptionPlant"
+                type="consumption"
+                @plant-added="addConsumptionPlant"
                 @close="isNewConsumptionPlantDialogOpen = false"
             />
         </v-dialog>
@@ -33,15 +34,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NewConsumptionPlantDialog from '@/components/consumptionPlants/NewConsumptionPlantDialog.vue'
-import ConsumptionPlantCard from '@/components/consumptionPlants/ConsumptionPlantCard.vue'
+import NewPlantDialog from '@/components/plants/NewPlantDialog.vue'
+import PlantCard from '@/components/plants/PlantCard.vue'
 
 export default {
     name: 'ConsumptionPlantsView',
 
     components: {
-        NewConsumptionPlantDialog,
-        ConsumptionPlantCard,
+        NewPlantDialog,
+        PlantCard,
     },
 
     data() {

@@ -15,16 +15,17 @@
                 ></v-img>
                 <v-row v-if="Object.keys(generationPlants).length">
                     <v-col cols="3" v-for="generationPlant in generationPlants" :key="generationPlant.idcAddress">
-                        <generation-plant-card :generation-plant="generationPlant" />
+                        <plant-card :plant="generationPlant" plant-type="generation" />
                     </v-col>
                 </v-row>
             </v-card-text>
         </v-card>
 
         <v-dialog v-model="isNewGenerationPlantDialogOpen" width="700">
-            <new-generation-plant-dialog
+            <new-plant-dialog
                 v-if="isNewGenerationPlantDialogOpen"
-                @generation-plant-added="addGenerationPlant"
+                type="generation"
+                @plant-added="addGenerationPlant"
                 @close="isNewGenerationPlantDialogOpen = false"
             />
         </v-dialog>
@@ -33,15 +34,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import NewGenerationPlantDialog from '@/components/generationPlants/NewGenerationPlantDialog.vue'
-import GenerationPlantCard from '@/components/generationPlants/GenerationPlantCard.vue'
+import NewPlantDialog from '@/components/plants/NewPlantDialog.vue'
+import PlantCard from '@/components/plants/PlantCard.vue'
 
 export default {
     name: 'GenerationPlantsView',
 
     components: {
-        NewGenerationPlantDialog,
-        GenerationPlantCard,
+        NewPlantDialog,
+        PlantCard,
     },
 
     data() {

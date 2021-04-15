@@ -5,7 +5,7 @@
             <v-card-text>
                 <v-row v-if="filteredConsumptionPlants.length">
                     <v-col cols="3" v-for="consumptionPlant in filteredConsumptionPlants" :key="consumptionPlant.id">
-                        <sign-consumption-plant-card :consumption-plant="consumptionPlant" />
+                        <sign-plant-card :plant="consumptionPlant" plant-type="consumption" />
                     </v-col>
                 </v-row>
                 <v-img v-else src="@/assets/undraw_houses.svg" class="mx-auto" width="50%"></v-img>
@@ -15,13 +15,15 @@
 </template>
 
 <script>
-import SignConsumptionPlantCard from '@/components/admin/SignConsumptionPlantCard'
+import SignPlantCard from '@/components/admin/SignPlantCard'
 import { mapGetters } from 'vuex'
+import { claimTypes } from '@/utils/claims'
+
 export default {
     name: 'NewConsumptionPlants',
 
     components: {
-        SignConsumptionPlantCard,
+        SignPlantCard,
     },
 
     data() {
@@ -51,12 +53,12 @@ export default {
         filteredConsumptionPlants() {
             return this.consumptionPlants.filter(
                 (plant) =>
-                    (!plant.signatures.BalanceClaim && this.activeAccountIsBalanceAuthority) ||
-                    (this.activeAccountIsMeteringAuthority && !plant.signatures.MeteringClaim) ||
+                    (!plant.signatures[claimTypes.BalanceClaim] && this.activeAccountIsBalanceAuthority) ||
+                    (this.activeAccountIsMeteringAuthority && !plant.signatures[claimTypes.MeteringClaim]) ||
                     (this.activeAccountIsPhysicalAssetAuthority &&
-                        (!plant.signatures.ExistenceClaim ||
-                            !plant.signatures.MaxPowerConsumptionClaim ||
-                            !plant.signatures.LocationClaim))
+                        (!plant.signatures[claimTypes.ExistenceClaim] ||
+                            !plant.signatures[claimTypes.MaxPowerConsumptionClaim] ||
+                            !plant.signatures[claimTypes.LocationClaim]))
             )
         },
     },

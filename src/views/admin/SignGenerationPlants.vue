@@ -5,7 +5,7 @@
             <v-card-text>
                 <v-row v-if="filteredGenerationPlants.length">
                     <v-col cols="3" v-for="generationPlant in filteredGenerationPlants" :key="generationPlant.id">
-                        <sign-generation-plant-card :generation-plant="generationPlant" />
+                        <sign-plant-card :plant="generationPlant" plant-type="generation" />
                     </v-col>
                 </v-row>
                 <v-img v-else src="@/assets/undraw_wind_turbine.svg" class="mx-auto" width="50%"></v-img>
@@ -15,14 +15,15 @@
 </template>
 
 <script>
-import SignGenerationPlantCard from '@/components/admin/SignGenerationPlantCard'
+import SignPlantCard from '@/components/admin/SignPlantCard'
 import { mapGetters } from 'vuex'
+import { claimTypes } from '@/utils/claims'
 
 export default {
     name: 'SignGenerationPlants',
 
     components: {
-        SignGenerationPlantCard,
+        SignPlantCard,
     },
 
     data() {
@@ -52,13 +53,13 @@ export default {
         filteredGenerationPlants() {
             return this.generationPlants.filter(
                 (plant) =>
-                    (!plant.signatures.BalanceClaim && this.activeAccountIsBalanceAuthority) ||
-                    (this.activeAccountIsMeteringAuthority && !plant.signatures.MeteringClaim) ||
+                    (!plant.signatures[claimTypes.BalanceClaim] && this.activeAccountIsBalanceAuthority) ||
+                    (this.activeAccountIsMeteringAuthority && !plant.signatures[claimTypes.MeteringClaim]) ||
                     (this.activeAccountIsPhysicalAssetAuthority &&
-                        (!plant.signatures.ExistenceClaim ||
-                            !plant.signatures.GenerationTypeClaim ||
-                            !plant.signatures.LocationClaim ||
-                            !plant.signatures.MaxPowerGenerationClaim))
+                        (!plant.signatures[claimTypes.ExistenceClaim] ||
+                            !plant.signatures[claimTypes.GenerationTypeClaim] ||
+                            !plant.signatures[claimTypes.LocationClaim] ||
+                            !plant.signatures[claimTypes.MaxPowerGenerationClaim]))
             )
         },
     },
