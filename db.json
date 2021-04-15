@@ -1,4 +1,55 @@
 {
-    "generationPlants": [],
-    "consumptionPlants": []
+  "generationPlants": [
+    {
+      "owner": "0xCf31225E2b8C7d6e7C956891BEdF44BEaCe396CE",
+      "idcAddress": "0x8fe0C5b86eE5129d67a1b6e3B8caB2fBcC36c8f0",
+      "realWorldPlantId": "bestGenerationPlantId",
+      "imgURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/1000000000seconds.jpg/330px-1000000000seconds.jpg",
+      "lat": "49.006454",
+      "long": "8.522135",
+      "expiryDate": 1933875328.97,
+      "startDate": 1618515.32897,
+      "signatures": {
+        "10040": {
+          "signature": "0xad90704874a047dafea885622a9fb84c1bc2ea03ace0eafc924a5be7c42f2ca2344e9b3f15e63718e88ee6166931ee9bc507105e1025e47bf5149a5c44c084e21b",
+          "issuer": "0xBFFE1152CAF7B82af98E313D4727FBDbe7184dB8"
+        },
+        "10050": null,
+        "10060": null,
+        "10065": null,
+        "10070": {
+          "signature": "0x179dff5665cf16a98f4ab99cb612bfb9c8370c0515d1a8fe55cf9dc52cd3908e6b075b039f35a6d7135e19d70207369a77fbfbc9187d083631f63a2f6341677c1c",
+          "issuer": "0x60671C7C0c892ec62694860839e3399E2DB52E30"
+        },
+        "10080": {
+          "signature": "0x953aaffa9288ac80ce5e8f9c6007750113153cd2db142f7bec84d5891fb274d747ead092a9dcfecf70019720f081e578c92ca4935ec54949aa1d52f525d157b11b",
+          "issuer": "0x60671C7C0c892ec62694860839e3399E2DB52E30"
+        }
+      },
+      "maxGen": 300000000,
+      "plantType": "WindTurbine",
+      "id": 1
+    }
+  ],
+  "consumptionPlants": [
+    {
+      "owner": "0xe5cdF87F1372baf6Ee77B7859CA9d8EAc6EdD089",
+      "idcAddress": "0x956E84505b4582721eDaB03ffC7212A77C29F140",
+      "realWorldPlantId": "consumption Plan x",
+      "imgURL": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3.jpg",
+      "lat": "49.006548",
+      "long": "7.898903",
+      "expiryDate": 1933878315.952,
+      "startDate": 1618518.315952,
+      "signatures": {
+        "10040": null,
+        "10050": null,
+        "10060": null,
+        "10080": null,
+        "10140": null
+      },
+      "maxCon": 150000000,
+      "id": 1
+    }
+  ]
 }
