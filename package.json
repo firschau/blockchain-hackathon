@@ -44,14 +44,12 @@
         "vuetify-loader": "^1.7.0"
     },
     "scripts": {
-        "start": "cd app && npm start",
         "prebuild": "npm i",
         "build": "gulp build",
         "tests": "gulp tests",
         "serve": "vue-cli-service serve",
         "build-frontend": "vue-cli-service build",
-        "lint": "vue-cli-service lint",
-        "mock-server": "json-server --watch db.json"
+        "lint": "vue-cli-service lint"
     },
     "gitHooks": {
         "pre-commit": "lint-staged"
