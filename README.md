@@ -100,4 +100,5 @@ Login with an Account of your choice, create an identity contract, and then head
 
 - If you used the mnemonic from above to create your chain you can use this command to setup all three authorities for the accounts[6] - accounts[8]:
 
+
     truffle exec ./truffleScripts/setupAuthorities.js
