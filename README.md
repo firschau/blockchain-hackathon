@@ -9,16 +9,25 @@ This paper describes how distributed ledger technology or blockchain can be used
 
 The Blockchain identities are implemented with the [ERC725](https://github.com/ethereum/EIPs/issues/725) and [ERC735](https://github.com/ethereum/EIPs/issues/735) standards. The energy tokens are implemented with the [ERC1155](https://github.com/ethereum/EIPs/issues/1155) standard.
 
+## Prerequisites
+
+To run this project you need node.js installed on your system: https://nodejs.org/
+
 ## Cloning the repository
 
-    git clone --recursive https://github.com/B2E2/b2e2_contracts.git
+    git clone --recursive https://git.scc.kit.edu/ukdqp/blockchain-hackathon-enbw.git
 
 ## Installing Dependencies
 
-    sudo npm install -g truffle
+    cd blockchain-hackathon-enbw
     npm install
 
-## Set Up the Ganache App
+    cd dependencies/jsmnSol
+    npm install
+
+## Set Up a local Chain with Ganache
+
+### Alternative 1
 
 Download Ganache at https://www.trufflesuite.com/ganache#
 Install Ganache localy
@@ -29,16 +38,22 @@ press "Add Project" and add the `truffle-config.js` from the root folder
 Make sure Hostname is `127.0.0.1 - IoO`
 Change Port Number to: `8545`
 -> Accounts & Keys:
-change (optinal): add the mnemonic (for esay setup and support scripts) "bread leave edge glide soda seat trim armed canyon rural cross scheme"
+change (optinal): add the mnemonic (for easy setup and support scripts) "bread leave edge glide soda seat trim armed canyon rural cross scheme"
 ->CHAIN:
 Change GAS LIMIT to: `10000000`
 Select Hardfork: `Peterburg`
 
 Start the Workspace
 
+### Alternative 2
+
+start a chain from a terminal with
+
+    npx ganache-cli --gasLimit 10000000 -m "bread leave edge glide soda seat trim armed canyon rural cross scheme"
+
 ## Set Up MetaMask
 
-Download MetaMask PlugInn
+Download MetaMask PlugIn
 SetUp an Account on MetaMask
 Select Properties -> Network -> Add Network
 Enter a Name as the Networkname
@@ -49,16 +64,15 @@ Chain ID: `1337`
 
 -Commands to deploy the Contracts on Ganache
 
-truffle compile
-truffle migrate --reset
+    truffle migrate
 
 -Start the json-server
 
-node at ./mockServer/server.js // check path again
+    node at ./mockServer/server.js // check path again
 
 -Start the vue server
 
-npm run serve
+    npm run serve
 
 ## Testing
 
