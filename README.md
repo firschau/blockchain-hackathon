@@ -80,11 +80,11 @@ start a chain from a terminal with
 
 - Start the json-server
 
-    node ./mockServer/server.js
+    `node ./mockServer/server.js`
 
 - Start the vue server
 
-    npm run serve
+    `npm run serve`
 
 - Open the locally served side with your browser (default: http://localhost:8080) and connect your meta mask accounts
 
@@ -100,5 +100,4 @@ Login with an Account of your choice, create an identity contract, and then head
 
 - If you used the mnemonic from above to create your chain you can use this command to setup all three authorities for the accounts[6] - accounts[8]:
 
-
-    truffle exec ./truffleScripts/setupAuthorities.js
+    `truffle exec ./truffleScripts/setupAuthorities.js`
