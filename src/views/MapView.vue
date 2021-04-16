@@ -16,6 +16,7 @@ import View from 'ol/View'
 import Map from 'ol/Map'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
+import { fromLonLat } from 'ol/proj'
 
 export default {
     name: 'MapView',
@@ -28,6 +29,7 @@ export default {
         }
     },
     mounted() {
+        const karlsruheGPS = [8.40436, 49.013941] //first Long then Lat !
         // this is where we create the OpenLayers map
         new Map({
             // the map will be created using the 'map-root' ref
@@ -41,8 +43,8 @@ export default {
 
             // the map view will initially show the whole world
             view: new View({
-                zoom: 0,
-                center: [0, 0],
+                zoom: 7,
+                center: fromLonLat(karlsruheGPS),
                 constrainResolution: true,
             }),
         })
