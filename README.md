@@ -74,15 +74,15 @@ start a chain from a terminal with
 
 ## Build & Run Application
 
--Commands to deploy the Contracts on Ganache
+- Commands to deploy the Contracts on Ganache
 
     truffle migrate
 
--Start the json-server
+- Start the json-server
 
     node ./mockServer/server.js
 
--Start the vue server
+- Start the vue server
 
     npm run serve
 
