@@ -86,6 +86,8 @@ start a chain from a terminal with
 
     npm run serve
 
+- Open the locally served side with your browser (default: http://localhost:8080) and connect your meta mask accounts
+
 ## Setup a market
 
 To setup the market you'll need to add some market authorities first:
