@@ -1,36 +1,59 @@
 # B2E2 - Smart Contracts
 
-Based on experience with prototypical use cases, our team at [Energie Baden-Württemberg AG (EnBW)](https://www.enbw.com/) has written the whitepaper 'EnergyTokenModel'. In this paper we describe how distributed ledger technology or blockchain can be used in the energy industry providing a basis for a blockchain based energy ecosystem in which usecases as i.e. energy sharing, proof of origin, local markets can be realized. The presented approach shows a way how real-world objects can be digitally mapped on a blockchain and how properties and transactions can be documented in a trustworthy way. The White Paper is currently available for download in German language [here](https://it-architecture.enbw.com/whitepaper-energy-token-model/).
- 
-With the publication of the smart contracts in this repository we are taking the next step. After we have explained in the white paper how DLT mechanisms can be applied in the energy industry, we show here how the implementation looks like. Since we believe that the advantage of using DLT is to have a common transaction layer, we publish the repository under a MIT open source license. 
+This Repository is the work of three KIT Students and was build in cooperation with [Energie Baden-Württemberg AG (EnBW)](https://www.enbw.com/).
+This Application was developed during the first Blockchain Hackathon of the Institute for Critical Information Infrastructure in March and April 2021.
+The Application allows the controlling and to managing of the market setup with its authorities and institutions.
 
-With our publications, we are contributing to the public discussion on how the block chain can be used in the energy industry and hope to receive further ideas and impulses.
+The underlying Smart Contract was developed by the EnBW based on the white paper 'EnergyTokenModel'.
+This paper describes how distributed ledger technology or blockchain can be used in the energy industry providing a basis for a blockchain based energy ecosystem in which use cases as i.e. energy sharing, proof of origin, local markets can be realized. The presented Smart Contact approach shows a way how real-world objects can be digitally mapped on a blockchain and how properties and transactions can be documented in a trustworthy way. The White Paper is currently available for download in German language [here](https://it-architecture.enbw.com/whitepaper-energy-token-model/).
 
 The Blockchain identities are implemented with the [ERC725](https://github.com/ethereum/EIPs/issues/725) and [ERC735](https://github.com/ethereum/EIPs/issues/735) standards. The energy tokens are implemented with the [ERC1155](https://github.com/ethereum/EIPs/issues/1155) standard.
 
-The latest version of the sequence and entity relationship diagrams from the whitepaper can be found in the directory './documentation'.  
-
 ## Cloning the repository
+
     git clone --recursive https://github.com/B2E2/b2e2_contracts.git
 
 ## Installing Dependencies
-    sudo npm install -g truffle ganache ganache-cli
-    cd Energietokens-Implementierung
+
+    sudo npm install -g truffle
     npm install
-	cd dependencies/jsmnSol
-	npm install
 
-## Building & Deployment
-Launch Ganache:
+## Set Up the Ganache App
 
-    npx ganache-cli -l 1000000000
+Download Ganache at https://www.trufflesuite.com/ganache#
+Install Ganache localy
+Launch Ganache App:
+-> Workspace:
+press "Add Project" and add the `truffle-config.js` from the root folder
+-> Server:
+Make sure Hostname is 127.0.0.1 - IoO
+Change Port Number to: 8545
+-> Accounts & Keys:
+change (optinal): add the mnemonic (for esay setup and support scripts) "bread leave edge glide soda seat trim armed canyon rural cross scheme"
+->CHAIN:
+Change GAS LIMIT to: 10000000
+Select Hardfork: Peterburg
 
-Choose a sender address from the list that's printed and replace the address in the line containing `from:` in `truffle-config.js` by it.
+Start the Workspace
 
-Then (in a different terminal instance) compile the contracts and deploy them:
+## Set Up MetaMask
 
-    npx truffle compile
-    npx truffle deploy
+Download MetaMask PlugInn
+SetUp an Account on MetaMask
+Select Properties -> Network -> Add Network
+Enter a Name as the Networkname
+New RPC-URL: HTTP://127.0.0.1:8545
+Chain ID: 1337
+
+## Build& Run Application
+
+Commands to deploy the Contracts on Ganache
+truffle compile
+truffle migrate --reset
+Start the json-server  
+ node at ./mockServer/server.js // check path again
+Start the vue server
+npm run serve
 
 ## Testing
 
@@ -38,7 +61,7 @@ Then (in a different terminal instance) compile the contracts and deploy them:
 
 Launch Ganache:
 
-    npx ganache-cli -l 1000000000 -m "bread leave edge glide soda seat trim armed canyon rural cross scheme"
+npx ganache-cli -l 1000000000 -m "bread leave edge glide soda seat trim armed canyon rural cross scheme"
 
 Copy sender address 0 from the list that's printed and replace the address in the line containing `from:` in `truffle-config.js` by it.
 

@@ -44,8 +44,14 @@
       "signatures": {
         "10040": null,
         "10050": null,
-        "10060": null,
-        "10080": null,
+        "10060": {
+          "signature": "0x89a35b9f491787a8403ab158deda1bf3967ba325bbf7348a7fef5cf94ff1a90a54c94de085090adc9c92fb1e7b2b0f8de2d1d4289836e3c4f5cf6c4ceffe7e9f1b",
+          "issuer": "0x60671C7C0c892ec62694860839e3399E2DB52E30"
+        },
+        "10080": {
+          "signature": "0xe6030ff9703dc3563df1b5b53602e3fb18e4bff711dbeee2126ba0374e8b31152dd88d7e4c336e8948f3f66f3a312fb843a054aba7b68498f684c977ccb8e4311c",
+          "issuer": "0x60671C7C0c892ec62694860839e3399E2DB52E30"
+        },
         "10140": null
       },
       "maxCon": 150000000,
