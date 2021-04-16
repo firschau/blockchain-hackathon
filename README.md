@@ -97,3 +97,7 @@ The market authority is set as accounts[9] by the truffle migrations
 
 - Balance / Metering / Physical Asset Authority:
 Login with an Account of your choice, create an identity contract, and then head over to the market authority (accounts[9]) and add the respective claim to the address of the identity contract
+
+- If you used the mnemonic from above to create your chain you can use this command to setup all three authorities for the accounts[6] - accounts[8]:
+
+    truffle exec ./truffleScripts/setupAuthorities.js
