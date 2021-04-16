@@ -62,6 +62,7 @@ export default {
                 { to: '/identityContracts', text: 'Identity Contracts' },
                 { to: '/generationPlants', text: 'Generation Plants' },
                 { to: '/consumptionPlants', text: 'Consumtion Plants' },
+                { to: '/mapView', text: 'View Map' },
             ],
             adminNavItems: [
                 { to: '/claims', text: 'Add Authority', filter: () => this.activeAccountIsMarketAuthority },
