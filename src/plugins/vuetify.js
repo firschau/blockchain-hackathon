@@ -13,6 +13,7 @@ export default new Vuetify({
                 gray: '#909090',
                 white: '#FFFFFF',
                 darkblueshade: '#011F30',
+                darkyellow: '#AF7922',
             },
         },
     },

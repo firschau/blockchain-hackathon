@@ -1,3 +1,4 @@
 {
-    "solidity.defaultCompiler": "localNodeModule"
+    "solidity.defaultCompiler": "localNodeModule",
+    "editor.minimap.enabled": false
 }

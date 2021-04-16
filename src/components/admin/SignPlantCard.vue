@@ -6,6 +6,10 @@
         </div>
         <v-divider />
         <v-card-text>
+            <div>
+                <b>Owner of the Plant:</b>
+                {{ plant.owner.substr(0, 8) + '....' + plant.owner.substr(38, 4) }}
+            </div>
             <v-row dense>
                 <v-col cols="8">
                     <div>
