@@ -10,8 +10,7 @@
                 <img :src="require('../assets/ethereum.svg')" alt="Ethereum Logo" width="40" />
                 <p>
                     This app provides a first prototype of a blockchain-based<br />energy market, leveraging the EnBW
-                    B2E2 architecture. <br />
-                    *Hier könnte eine ausführlichere Beschreibung rein*
+                    B2E2 architecture.
                 </p>
             </v-col>
         </v-row>
