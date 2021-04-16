@@ -26,13 +26,13 @@ Launch Ganache App:
 -> Workspace:
 press "Add Project" and add the `truffle-config.js` from the root folder
 -> Server:
-Make sure Hostname is 127.0.0.1 - IoO
-Change Port Number to: 8545
+Make sure Hostname is `127.0.0.1 - IoO`
+Change Port Number to: `8545`
 -> Accounts & Keys:
 change (optinal): add the mnemonic (for esay setup and support scripts) "bread leave edge glide soda seat trim armed canyon rural cross scheme"
 ->CHAIN:
-Change GAS LIMIT to: 10000000
-Select Hardfork: Peterburg
+Change GAS LIMIT to: `10000000`
+Select Hardfork: `Peterburg`
 
 Start the Workspace
 
@@ -42,17 +42,22 @@ Download MetaMask PlugInn
 SetUp an Account on MetaMask
 Select Properties -> Network -> Add Network
 Enter a Name as the Networkname
-New RPC-URL: HTTP://127.0.0.1:8545
-Chain ID: 1337
+New RPC-URL: `HTTP://127.0.0.1:8545`
+Chain ID: `1337`
 
-## Build& Run Application
+## Build & Run Application
 
-Commands to deploy the Contracts on Ganache
+-Commands to deploy the Contracts on Ganache
+
 truffle compile
 truffle migrate --reset
-Start the json-server  
- node at ./mockServer/server.js // check path again
-Start the vue server
+
+-Start the json-server
+
+node at ./mockServer/server.js // check path again
+
+-Start the vue server
+
 npm run serve
 
 ## Testing
