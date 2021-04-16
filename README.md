@@ -76,7 +76,7 @@ start a chain from a terminal with
 
 - Commands to deploy the Contracts on Ganache
 
-    truffle migrate
+    `npx truffle migrate`
 
 - Start the json-server
 
