@@ -35,7 +35,8 @@ To run this project you need node.js installed on your system: https://nodejs.or
 Launch Ganache App:
 
 - Workspace:
-    press "Add Project" and add the `truffle-config.js` from the root folder
+    
+press "Add Project" and add the `truffle-config.js` from the root folder
 
 - Server:
 
