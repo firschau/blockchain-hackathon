@@ -3,15 +3,11 @@
         <v-card class="ma-10">
             <v-card-title style="">Plant Locations</v-card-title>
             <div ref="map-root" style="width: 100%; height: 600px"></div>
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
+            <div ref="container" class="ol-popup">
+                <a href="#" ref="closer" class="ol-popup-closer"></a>
+                <div ref="content" id="content"></div>
             </div>
         </v-card>
-        <!-- 
-        <v-row class="text-center">
-            <v-col justify="center"> </v-col>
-        </v-row> -->
     </v-container>
 </template>
 
@@ -21,34 +17,40 @@ import Map from 'ol/Map'
 import TileLayer from 'ol/layer/Tile'
 import OSM from 'ol/source/OSM'
 import { fromLonLat } from 'ol/proj'
-var container = document.getElementById('popup')
-var content = document.getElementById('popup-content')
-var closer = document.getElementById('popup-closer')
-
-// import ol from 'ol'
-//import Geom from 'ol/geom'
-
 import Feature from 'ol/Feature'
 import LayerVector from 'ol/layer/Vector'
 import SourceVector from 'ol/source/Vector'
 import Point from 'ol/geom/Point'
-import Overlay from 'ol/Overlay'
-//import Source from 'ol/source'
+import { Icon, Style } from 'ol/style'
+
 export default {
     name: 'MapView',
 
     data() {
         return {
-            isNewConsumptionPlantDialogOpen: false,
             consumptionPlants: {},
             generationPlants: {},
+            map: null,
+            generationStyle: new Style({
+                image: new Icon({
+                    imgSize: [20, 20],
+                    src: 'wind-turbine.svg',
+                }),
+            }),
+            consumptionStyle: new Style({
+                image: new Icon({
+                    imgSize: [20, 20],
+                    src: 'home.svg',
+                }),
+            }),
         }
     },
+
     mounted() {
         const karlsruheGPS = [8.40436, 49.013941] //first Long then Lat !
         // this is where we create the OpenLayers map
 
-        var map = new Map({
+        this.map = new Map({
             // the map will be created using the 'map-root' ref
             target: this.$refs['map-root'],
             layers: [
@@ -66,54 +68,9 @@ export default {
             }),
         })
 
-        var layer = new LayerVector({
-            source: new SourceVector({
-                features: [
-                    new Feature({
-                        geometry: new Point(fromLonLat(karlsruheGPS)),
-                    }),
-                ],
-            }),
-        })
-        map.addLayer(layer)
-
-        var overlay = new Overlay({
-            element: container,
-            autoPan: true,
-            autoPanAnimation: {
-                duration: 250,
-            },
-        })
-        map.addOverlay(overlay)
-
-        closer.onclick = function () {
-            overlay.setPosition(undefined)
-            closer.blur()
-            return false
-        }
-
-        map.on('singleclick', function (event) {
-            if (map.hasFeatureAtPixel(event.pixel) === true) {
-                var coordinate = event.coordinate
-
-                content.innerHTML = '<b>Plant ID-23323</b>'
-                overlay.setPosition(coordinate)
-            } else {
-                overlay.setPosition(undefined)
-                closer.blur()
-            }
-        })
-
-        // var layer = new ol.layer.Vector({
-        //     source: new ol.source.Vector({
-        //         features: [
-        //             new ol.Feature({
-        //                 geometry: new ol.geom.Point(ol.proj.fromLonLat([4.35247, 50.84673])),
-        //             }),
-        //         ],
-        //     }),
-        // })
-        // map.addLayer(layer)
+        // load json-server data
+        this.loadConsumptionPlants()
+        this.loadGenerationPlants()
     },
 
     methods: {
@@ -126,8 +83,9 @@ export default {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    const activeUsersConsumptionPlants = data.filter((data) => data.owner === this.activeAccount)
-                    activeUsersConsumptionPlants.forEach((plant) => {
+                    // add layers for consumption plants
+                    this.addLayers(data, 'consumption')
+                    data.forEach((plant) => {
                         this.$set(this.consumptionPlants, plant.idcAddress, plant)
                     })
                 })
@@ -141,15 +99,40 @@ export default {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    const activeUsersGenerationPlants = data.filter((data) => data.owner === this.activeAccount)
-                    activeUsersGenerationPlants.forEach((plant) => {
+                    // add layers for generation plants
+                    this.addLayers(data, 'generation')
+                    data.forEach((plant) => {
                         this.$set(this.generationPlants, plant.idcAddress, plant)
                     })
                 })
         },
-        // probably not needed
-        addConsumptionPlant(consumptionPlant) {
-            this.$set(this.consumptionPlants, consumptionPlant.idcAddress, consumptionPlant)
+
+        // add markers to the map for the given plant types
+        addLayers(plants, type) {
+            const features = []
+
+            // style depending on plant type
+            const style = type === 'generation' ? this.generationStyle : this.consumptionStyle
+
+            plants.forEach((plant) => {
+                const feature = new Feature({
+                    geometry: new Point(fromLonLat([plant.long, plant.lat])),
+                    style,
+                })
+
+                feature.setStyle(style)
+
+                features.push(feature)
+            })
+
+            if (this.map && features.length) {
+                var layer = new LayerVector({
+                    source: new SourceVector({
+                        features: features,
+                    }),
+                })
+                this.map.addLayer(layer)
+            }
         },
     },
 }
