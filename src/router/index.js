@@ -7,6 +7,7 @@ import Authorities from '../views/Authorities.vue'
 import IdentityContracts from '../views/IdentityContracts.vue'
 import GenerationPlants from '../views/GenerationPlants.vue'
 import ConsumptionPlants from '../views/ConsumptionPlants.vue'
+import MapView from '../views/MapView.vue'
 import Claims from '../views/admin/Claims.vue'
 import SignGenerationPlants from '../views/admin/SignGenerationPlants.vue'
 import SignConsumptionPlants from '../views/admin/SignConsumptionPlants.vue'
@@ -46,6 +47,10 @@ const routes = [
     {
         path: '/signConsumptionPlants',
         component: SignConsumptionPlants,
+    },
+    {
+        path: '/mapView',
+        component: MapView,
     },
 ]
 
