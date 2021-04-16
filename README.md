@@ -29,18 +29,29 @@ To run this project you need node.js installed on your system: https://nodejs.or
 
 ### Alternative 1
 
-Download Ganache at https://www.trufflesuite.com/ganache#
-Install Ganache localy
+- Download Ganache at https://www.trufflesuite.com/ganache#
+- Install Ganache
+
 Launch Ganache App:
--> Workspace:
+
+- Workspace:
+
 press "Add Project" and add the `truffle-config.js` from the root folder
--> Server:
+
+- Server:
+
 Make sure Hostname is `127.0.0.1 - IoO`
+
 Change Port Number to: `8545`
--> Accounts & Keys:
+
+- Accounts & Keys:
+
 change (optinal): add the mnemonic (for easy setup and support scripts) "bread leave edge glide soda seat trim armed canyon rural cross scheme"
-->CHAIN:
+
+- CHAIN:
+
 Change GAS LIMIT to: `10000000`
+
 Select Hardfork: `Peterburg`
 
 Start the Workspace
