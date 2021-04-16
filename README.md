@@ -64,12 +64,13 @@ start a chain from a terminal with
 
 ## Set Up MetaMask
 
-Download MetaMask PlugIn
-SetUp an Account on MetaMask
-Select Properties -> Network -> Add Network
-Enter a Name as the Networkname
-New RPC-URL: `HTTP://127.0.0.1:8545`
-Chain ID: `1337`
+- Download MetaMask PlugIn
+- SetUp an Account on MetaMask
+- Hint: recover all accounts at once with the mnemonic you used to start the chain 
+- Select Properties -> Network -> Add Network
+- Enter a Name as the Networkname
+- New RPC-URL: `HTTP://127.0.0.1:8545`
+- Chain ID: `1337`
 
 ## Build & Run Application
 
@@ -79,32 +80,18 @@ Chain ID: `1337`
 
 -Start the json-server
 
-    node at ./mockServer/server.js // check path again
+    node ./mockServer/server.js
 
 -Start the vue server
 
     npm run serve
 
-## Testing
+## Setup a market
 
-### Alternative 1
+To setup the market you'll need to add some market authorities first:
 
-Launch Ganache:
+- Market Authority:
+The market authority is set as accounts[9] by the truffle migrations
 
-npx ganache-cli -l 1000000000 -m "bread leave edge glide soda seat trim armed canyon rural cross scheme"
-
-Copy sender address 0 from the list that's printed and replace the address in the line containing `from:` in `truffle-config.js` by it.
-
-Copy private key 9 and change the definition of `account9Sk` at the top of `test/IdentityContract.test.js` to it.
-
-Run the tests (in a different terminal instance):
-
-    npx truffle deploy # required for tests to run successfully
-    npx truffle test
-
-### Alternative 2
-
-```
-    npm run build
-    npm run tests
-```
+- Balance / Metering / Physical Asset Authority:
+Login with an Account of your choice, create an identity contract, and then head over to the market authority (accounts[9]) and add the respective claim to the address of the identity contract
