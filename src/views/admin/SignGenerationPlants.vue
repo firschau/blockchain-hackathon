@@ -32,6 +32,7 @@ export default {
         }
     },
 
+    // load all plants on load
     created() {
         fetch('/api/generationPlants', {
             headers: {
@@ -50,6 +51,8 @@ export default {
             'activeAccountIsMeteringAuthority',
             'activeAccountIsPhysicalAssetAuthority',
         ]),
+
+        // returns generaton plants filtered by those relevant for the active account
         filteredGenerationPlants() {
             return this.generationPlants.filter(
                 (plant) =>

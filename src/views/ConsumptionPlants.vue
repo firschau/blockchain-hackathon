@@ -48,15 +48,21 @@ export default {
     data() {
         return {
             isNewConsumptionPlantDialogOpen: false,
+
+            // [identityContractAddress]: plant
             consumptionPlants: {},
         }
     },
 
+    // called on crated
     created() {
         this.loadConsumptionPlants()
     },
 
     methods: {
+        /**
+         * filteres the loaded plants by those owned by the active account
+         */
         loadConsumptionPlants() {
             this.consumptionPlants = {}
             fetch('/api/consumptionPlants', {
@@ -66,18 +72,22 @@ export default {
             })
                 .then((response) => response.json())
                 .then((data) => {
+                    // filter plants and set the state
                     const activeUsersConsumptionPlants = data.filter((data) => data.owner === this.activeAccount)
                     activeUsersConsumptionPlants.forEach((plant) => {
                         this.$set(this.consumptionPlants, plant.idcAddress, plant)
                     })
                 })
         },
+
+        // adds a new consumption plant to the state
         addConsumptionPlant(consumptionPlant) {
             this.$set(this.consumptionPlants, consumptionPlant.idcAddress, consumptionPlant)
         },
     },
 
     watch: {
+        // reloads the plants if the active account changed
         activeAccount: function () {
             this.loadConsumptionPlants()
         },

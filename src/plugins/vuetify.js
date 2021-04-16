@@ -3,6 +3,7 @@ import Vuetify from 'vuetify/lib/framework'
 
 Vue.use(Vuetify)
 
+// some default colors
 export default new Vuetify({
     theme: {
         themes: {

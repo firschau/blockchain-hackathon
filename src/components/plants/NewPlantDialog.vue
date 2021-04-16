@@ -166,7 +166,7 @@ export default {
                     )
                     .send({ from: this.activeAccount })
                     .then(() => {
-                        // add the new data to the json-server
+                        // plant data shared for all types
                         let plant = {
                             owner: this.activeAccount,
                             idcAddress: identityContract.options.address,
@@ -184,6 +184,7 @@ export default {
                             },
                         }
 
+                        // additional data for generation plants
                         if (this.type === 'generation') {
                             plant = {
                                 ...plant,
@@ -195,7 +196,9 @@ export default {
                                     [claimTypes.GenerationTypeClaim]: null,
                                 },
                             }
-                        } else if (this.type === 'consumption') {
+                        }
+                        // additional data for consumption plants
+                        else if (this.type === 'consumption') {
                             plant = {
                                 ...plant,
                                 maxCon: this.maxCon,
@@ -206,6 +209,7 @@ export default {
                             }
                         }
 
+                        // add the new data to the json-server
                         fetch(`/api/${this.type}Plants`, {
                             method: 'post',
                             headers: {

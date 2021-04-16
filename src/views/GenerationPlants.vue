@@ -48,15 +48,21 @@ export default {
     data() {
         return {
             isNewGenerationPlantDialogOpen: false,
+
+            // [identityContractAddress]: plant
             generationPlants: {},
         }
     },
 
+    // called on crated
     created() {
         this.loadGenerationPlants()
     },
 
     methods: {
+        /**
+         * filteres the loaded plants by those owned by the active account
+         */
         loadGenerationPlants() {
             this.generationPlants = {}
             fetch('/api/generationPlants', {
@@ -66,18 +72,22 @@ export default {
             })
                 .then((response) => response.json())
                 .then((data) => {
+                    // filter plants and set the state
                     const activeUsersGenerationPlants = data.filter((data) => data.owner === this.activeAccount)
                     activeUsersGenerationPlants.forEach((plant) => {
                         this.$set(this.generationPlants, plant.idcAddress, plant)
                     })
                 })
         },
+
+        // adds a new consumption plant to the state
         addGenerationPlant(generationPlant) {
             this.$set(this.generationPlants, generationPlant.idcAddress, generationPlant)
         },
     },
 
     watch: {
+        // reloads the plants if the active account changed
         activeAccount: function () {
             console.log('activeAccountchanged')
             this.loadGenerationPlants()

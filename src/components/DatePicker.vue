@@ -26,6 +26,7 @@ export default {
     name: 'DatePicker',
 
     props: {
+        // value as timestamp
         value: {
             type: Number,
             required: true,
@@ -40,17 +41,20 @@ export default {
     data() {
         return {
             isDatePickerOpen: false,
+            // date string as value of the v-date-picker
             dateString: new Date(this.value).toISOString().substring(0, 10),
         }
     },
 
     computed: {
+        // formatted date to show in the input field
         formattedDate() {
             return new Date(this.dateString).toLocaleDateString()
         },
     },
 
     methods: {
+        // emits changes as timestamp
         onDatePickerInput(newDate) {
             this.isDatePickerOpen = false
 

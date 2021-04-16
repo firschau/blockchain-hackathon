@@ -25,6 +25,8 @@ const options = {
     },
 }
 
+// exports drizzle options as default
 export default options
 
+// exports drizzle object for direct use without the vuex store
 export const drizzle = new Drizzle(options)

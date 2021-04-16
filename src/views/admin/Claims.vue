@@ -63,7 +63,6 @@ import { mapGetters, mapState } from 'vuex'
 import { claimTypes, claimTypeToName } from '@/utils/claims'
 import { getNewContract } from '@/utils/drizzle'
 import IdentityContract from '@/contracts/IdentityContract.json'
-import Distributor from '@/contracts/Distributor.json'
 
 import DatePicker from '@/components/DatePicker'
 
@@ -104,22 +103,17 @@ export default {
     methods: {
         claimTypeToName,
         addClaim() {
+            // data for the claim
             let data = {
                 expiryDate: this.formData.expiryDate / 1000,
                 startDate: this.formData.startDate / 1000,
             }
 
+            // identity contract that gets the claim
             let targetAddress = this.identityContract.idcAddress
 
             // target Identity Contract as web3 Contract Object
             let targetIdentityContract = getNewContract(IdentityContract, targetAddress)
-
-            if (this.selectedClaimType === claimTypes.AcceptedDistributorClaim) {
-                data.address = this.identityContract.idcAddress.toString().slice(2).toLowerCase()
-
-                targetAddress = this.drizzleInstance.contracts.Distributor.address
-                targetIdentityContract = getNewContract(Distributor, targetAddress)
-            }
 
             // takes the users first activeAccount Identity Contract as issuer
             // won't work if the user has multiple identity contracts
@@ -133,6 +127,7 @@ export default {
                 hexlifiedData
             )
 
+            // sign the data, then add the claim
             this.drizzleInstance.web3.eth.sign(hashToSign, this.activeAccount).then((signature) => {
                 targetIdentityContract.methods
                     .addClaim(this.selectedClaimType, 1, issuerAddress, signature, hexlifiedData, '')

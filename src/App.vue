@@ -19,7 +19,7 @@
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title>Role:</v-list-item-title>
-                        <v-list-item-subtitle>{{ appTitle }}</v-list-item-subtitle>
+                        <v-list-item-subtitle>{{ activeAccountRoles }}</v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
@@ -114,7 +114,8 @@ export default {
         ]),
         ...mapGetters('drizzle', ['isDrizzleInitialized', 'drizzleInstance']),
         ...mapGetters('accounts', ['activeAccount']),
-        appTitle() {
+
+        activeAccountRoles() {
             let title = ''
             if (this.activeAccountIsMarketAuthority) {
                 title += 'Market Authority '
@@ -130,9 +131,13 @@ export default {
             }
             return title
         },
+
+        // filter Admin nav items by the role of the active account
         filteredAdminNavItems() {
             return this.adminNavItems.filter((navItem) => navItem.filter())
         },
+
+        // boolean if active account has an authority role
         isAdmin() {
             return (
                 this.activeAccountIsBalanceAuthority ||

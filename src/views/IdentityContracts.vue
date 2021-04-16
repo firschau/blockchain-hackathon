@@ -80,6 +80,8 @@ export default {
 
     methods: {
         claimTypeToName,
+
+        // method to add an new identity contract
         createNewIdentityContract() {
             this.drizzleInstance.contracts.IdentityContractFactory.methods
                 .createIdentityContract()
@@ -88,26 +90,36 @@ export default {
     },
 
     watch: {
+        /**
+         * loads all claims by the active accounts identity contracts
+         * reloads them if the active account changes
+         */
         activeAccountIdentityContracts: {
-            handler: function (val) {
-                val.forEach((identityContract) => {
+            handler: function (activeAccountIdentityContracts) {
+                activeAccountIdentityContracts.forEach((identityContract) => {
                     Object.values(claimTypes).forEach(async (claimType) => {
                         const claimIds = await identityContract.web3Contract.methods
                             .getClaimIdsByTopic(claimType)
                             .call()
-                        claimIds.forEach((claimId) => {
+
+                        if (claimIds.length) {
                             identityContract.web3Contract.methods
-                                .getClaim(claimId)
+                                .getClaim(claimIds[0])
                                 .call()
                                 .then((claim) => {
-                                    const serializedClaim = { ...serializeClaim(claim), id: claimId }
+                                    const serializedClaim = { ...serializeClaim(claim), id: claimIds[0] }
+
+                                    // push new claim if the field already exists
                                     if (this.claims[identityContract.idcAddress]) {
                                         this.claims[identityContract.idcAddress].push(serializedClaim)
-                                    } else {
+                                    }
+
+                                    // set field if it doesn't
+                                    else {
                                         this.$set(this.claims, identityContract.idcAddress, [serializedClaim])
                                     }
                                 })
-                        })
+                        }
                     })
                 })
             },

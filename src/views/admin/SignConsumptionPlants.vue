@@ -32,6 +32,7 @@ export default {
         }
     },
 
+    // load all plants on load
     created() {
         fetch('/api/consumptionPlants', {
             headers: {
@@ -50,6 +51,8 @@ export default {
             'activeAccountIsMeteringAuthority',
             'activeAccountIsPhysicalAssetAuthority',
         ]),
+
+        // returns consumption plants filtered by those relevant for the active account
         filteredConsumptionPlants() {
             return this.consumptionPlants.filter(
                 (plant) =>

@@ -249,6 +249,10 @@ export default {
             )?.idcAddress
         },
 
+        /**
+         * ======================================================================
+         * Functions that set the needed data for a claim and call this.signClaim
+         */
         signExistenceClaim() {
             const data = {
                 type: this.plantType,
@@ -296,6 +300,7 @@ export default {
 
             this.signClaim(claimTypes.MeteringClaim, data, this.getBalanceIdentityContractAddress())
         },
+        // ======================================================================
     },
 
     computed: {

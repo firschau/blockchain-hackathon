@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        <!-- ============== Market Authority ============== -->
         <v-card>
             <v-card-title> Market Authority </v-card-title>
             <v-card-text class="pt-4">
@@ -15,6 +16,9 @@
                 </v-list>
             </v-card-text>
         </v-card>
+        <!-- ============== /Market Authority ============== -->
+
+        <!-- ============== Balance Authorities ============== -->
         <v-card class="mt-4">
             <v-card-title> Balance Authorities </v-card-title>
             <v-card-text class="pt-4">
@@ -30,6 +34,9 @@
                 </v-list>
             </v-card-text>
         </v-card>
+        <!-- ============== /Balance Authorities ============== -->
+
+        <!-- ============== Metering Authorities ============== -->
         <v-card class="mt-4">
             <v-card-title> Metering Authorities </v-card-title>
             <v-card-text class="pt-4">
@@ -45,6 +52,9 @@
                 </v-list>
             </v-card-text>
         </v-card>
+        <!-- ============== /Metering Authorities ============== -->
+
+        <!-- ============== Physical Asset Authorities ============== -->
         <v-card class="mt-4">
             <v-card-title> Physical Asset Authorities </v-card-title>
             <v-card-text class="pt-4">
@@ -63,6 +73,7 @@
                 </v-list>
             </v-card-text>
         </v-card>
+        <!-- ============== /Physical Asset Authorities ============== -->
     </v-container>
 </template>
 
@@ -76,16 +87,22 @@ export default {
 
     computed: {
         ...mapState('identityContracts', ['identityContracts']),
+
+        // all identity contracts with a balance claim
         balanceAuthorities() {
             return this.identityContracts.filter((idc) =>
                 idc.claims.some((claim) => claim.__topic === claimTypes.IsBalanceAuthority)
             )
         },
+
+        // all identity contracts with a metering claim
         meteringAuthorities() {
             return this.identityContracts.filter((idc) =>
                 idc.claims.some((claim) => claim.__topic === claimTypes.IsMeteringAuthority)
             )
         },
+
+        // all identity contracts with a physical asset claim
         physicalAssetAuthorities() {
             return this.identityContracts.filter((idc) =>
                 idc.claims.some((claim) => claim.__topic === claimTypes.IsPhysicalAssetAuthority)
