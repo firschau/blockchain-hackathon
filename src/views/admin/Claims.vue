@@ -132,6 +132,9 @@ export default {
                 targetIdentityContract.methods
                     .addClaim(this.selectedClaimType, 1, issuerAddress, signature, hexlifiedData, '')
                     .send({ from: this.activeAccount })
+                    .then(() => {
+                        this.isAddClaimDialogOpen = false
+                    })
             })
         },
     },

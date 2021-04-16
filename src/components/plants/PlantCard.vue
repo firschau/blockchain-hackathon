@@ -286,14 +286,14 @@ export default {
         },
         addMaxPowerConsumptionClaim() {
             const data = {
-                maxCon: this.consumptionPlant.maxCon,
+                maxCon: this.plant.maxCon,
             }
 
             this.addClaim(
                 claimTypes.MaxPowerConsumptionClaim,
                 data,
-                this.consumptionPlant.signatures[claimTypes.MaxPowerConsumptionClaim].signature,
-                this.consumptionPlant.signatures[claimTypes.MaxPowerConsumptionClaim].issuer
+                this.plant.signatures[claimTypes.MaxPowerConsumptionClaim].signature,
+                this.plant.signatures[claimTypes.MaxPowerConsumptionClaim].issuer
             )
         },
         addLocationClaim() {
@@ -353,7 +353,7 @@ export default {
             return this.chainData[claimTypes.MaxPowerGenerationClaim]?.__data?.maxGen || this.plant?.maxGen
         },
         maxCon() {
-            return this.chainData[claimTypes.MaxPowerConsumptionClaim]?.__data?.maxCon || this.consumptionPlant?.maxCon
+            return this.chainData[claimTypes.MaxPowerConsumptionClaim]?.__data?.maxCon || this.plant?.maxCon
         },
         lat() {
             return this.chainData[claimTypes.LocationClaim]?.__data?.lat || this.plant?.lat

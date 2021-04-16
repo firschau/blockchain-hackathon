@@ -302,7 +302,7 @@ export default {
         signBalanceClaim() {
             const data = {}
 
-            this.signClaim(claimTypes.MeteringClaim, data, this.getBalanceIdentityContractAddress())
+            this.signClaim(claimTypes.BalanceClaim, data, this.getBalanceIdentityContractAddress())
         },
         // ======================================================================
     },
